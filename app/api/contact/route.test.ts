@@ -57,6 +57,7 @@ describe('POST /api/contact', () => {
     for (let i = 0; i < 5; i++) await POST(post(valid))
     const response = await POST(post(valid))
     expect(response.status).toBe(429)
+    expect(response.headers.get('retry-after')).toBe('600')
   })
 
   it('does not rate limit a different address', async () => {
@@ -79,5 +80,40 @@ describe('POST /api/contact', () => {
     const response = await POST(post(valid))
     expect(response.status).toBe(500)
     expect(JSON.stringify(await response.json())).not.toContain('DISCORD_WEBHOOK_URL')
+  })
+
+  it('rejects a request whose content-length exceeds the cap without parsing it', async () => {
+    const response = await POST(post(valid, { 'content-length': String(64 * 1024 + 1) }))
+    expect(response.status).toBe(413)
+    expect(await response.json()).toEqual({ ok: false, error: 'That message is too large.' })
+    expect(sendToDiscord).not.toHaveBeenCalled()
+  })
+
+  it('rejects an oversized actual body with no content-length header', async () => {
+    const oversized = { ...valid, message: 'a'.repeat(64 * 1024 + 1) }
+    const request = new Request('https://spearpointstudio.com/api/contact', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'cf-connecting-ip': '203.0.113.9' },
+      body: JSON.stringify(oversized),
+    })
+    // The fetch Request implementation does not populate content-length for
+    // a plain string body, so this exercises the actual-read guard rather
+    // than the header check above.
+    expect(request.headers.get('content-length')).toBeNull()
+    const response = await POST(request)
+    expect(response.status).toBe(413)
+    expect(await response.json()).toEqual({ ok: false, error: 'That message is too large.' })
+    expect(sendToDiscord).not.toHaveBeenCalled()
+  })
+
+  it('still returns 400 for malformed JSON', async () => {
+    const request = new Request('https://spearpointstudio.com/api/contact', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'cf-connecting-ip': '203.0.113.9' },
+      body: '{not valid json',
+    })
+    const response = await POST(request)
+    expect(response.status).toBe(400)
+    expect(await response.json()).toEqual({ ok: false, error: 'Invalid request body.' })
   })
 })
