@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { clientIp, rateLimit, resetRateLimit } from './rate-limit'
+import { clientIp, rateLimit, rateLimitSize, resetRateLimit } from './rate-limit'
 
 describe('clientIp', () => {
   it('prefers CF-Connecting-IP', () => {
@@ -42,5 +42,31 @@ describe('rateLimit', () => {
   it('tracks each address separately', () => {
     for (let i = 0; i < 5; i++) rateLimit('1.1.1.1', 1000)
     expect(rateLimit('2.2.2.2', 1000).allowed).toBe(true)
+  })
+
+  it('sweeps stale keys out of the map once a window has fully elapsed', () => {
+    const WINDOW_MS = 10 * 60 * 1000
+
+    // Prime the module's "last sweep" baseline so the rest of the test
+    // measures elapsed time relative to a known point, not module init (0).
+    const baseline = WINDOW_MS
+    rateLimit('baseline', baseline)
+    expect(rateLimitSize()).toBe(1)
+
+    const keyCount = 500
+    for (let i = 0; i < keyCount; i++) rateLimit(`10.0.0.${i}`, baseline)
+    expect(rateLimitSize()).toBe(keyCount + 1)
+
+    // Less than a full window since the last sweep: nothing is swept yet,
+    // even though these particular entries are already outside their own
+    // ten-minute rate-limit window.
+    rateLimit('fresh-key-a', baseline + WINDOW_MS - 1)
+    expect(rateLimitSize()).toBe(keyCount + 2)
+
+    // A full window has now elapsed since the last sweep: the walk runs and
+    // every key whose entries are all older than the cutoff is dropped,
+    // while the still-recent fresh-key-a survives.
+    rateLimit('fresh-key-b', baseline + WINDOW_MS + 1)
+    expect(rateLimitSize()).toBeLessThan(keyCount)
   })
 })
