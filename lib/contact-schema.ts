@@ -40,8 +40,14 @@ export function validateContact(body: unknown, now: number): ValidationResult {
   // Honeypot. Real people never see this field, so anything in it is a bot.
   if (str(raw.website).length > 0) return { ok: 'discard' }
 
+  // Only discard when the elapsed time is genuinely inside the fill window.
+  // A negative delta means the visitor's clock runs fast relative to the
+  // server, not that the form was filled too quickly. Unsynced clocks drift
+  // by minutes routinely, so a negative delta must fall through to normal
+  // validation and be delivered rather than silently discarded.
   const renderedAt = typeof raw.renderedAt === 'number' ? raw.renderedAt : 0
-  if (now - renderedAt < MIN_FILL_MS) return { ok: 'discard' }
+  const elapsed = now - renderedAt
+  if (elapsed >= 0 && elapsed < MIN_FILL_MS) return { ok: 'discard' }
 
   const name = str(raw.name)
   if (!inRange(name, 1, 80)) return { ok: false, error: 'Please enter your name.' }

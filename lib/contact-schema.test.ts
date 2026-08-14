@@ -50,6 +50,26 @@ describe('validateContact', () => {
     expect(result).toEqual({ ok: 'discard' })
   })
 
+  it('accepts a submission whose renderedAt is in the future (visitor clock runs fast)', () => {
+    const result = validateContact({ ...base, renderedAt: NOW + 300_000 }, NOW)
+    expect(result.ok).toBe(true)
+  })
+
+  it('discards a submission with a delta of exactly zero', () => {
+    const result = validateContact({ ...base, renderedAt: NOW }, NOW)
+    expect(result).toEqual({ ok: 'discard' })
+  })
+
+  it('accepts a submission with a delta of exactly MIN_FILL_MS', () => {
+    const result = validateContact({ ...base, renderedAt: NOW - 3000 }, NOW)
+    expect(result.ok).toBe(true)
+  })
+
+  it('discards a submission with a delta of 2999ms', () => {
+    const result = validateContact({ ...base, renderedAt: NOW - 2999 }, NOW)
+    expect(result).toEqual({ ok: 'discard' })
+  })
+
   it('trims surrounding whitespace on accepted values', () => {
     const result = validateContact({ ...base, name: '  Ada  ' }, NOW)
     if (result.ok !== true) throw new Error('expected success')
