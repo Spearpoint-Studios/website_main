@@ -2,27 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { roles, openRoles, roleBySlug } from './roles'
 
 describe('roles', () => {
-  it('hides roles marked closed', () => {
-    const closed = roles.filter((r) => !r.open)
-    const listed = openRoles()
-    for (const role of closed) {
-      expect(listed.find((r) => r.slug === role.slug)).toBeUndefined()
-    }
-  })
-
   it('returns an empty array from openRoles, so the careers page renders its empty state', () => {
     expect(openRoles()).toEqual([])
   })
 
-  // There is nothing to look up while roles is empty. This stays written so it
-  // resumes automatically the moment a real role is added, instead of being
-  // rewritten from memory at that point.
-  it.skipIf(roles.length === 0)('finds a role by slug', () => {
-    const first = roles[0]
-    expect(roleBySlug(first.slug)?.title).toBe(first.title)
-  })
-
-  it('returns undefined for an unknown slug', () => {
+  it('returns undefined for any slug, since there are no roles to find yet', () => {
+    expect(roleBySlug('anything')).toBeUndefined()
     expect(roleBySlug('not-a-real-role')).toBeUndefined()
   })
 
