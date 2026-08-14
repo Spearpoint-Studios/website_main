@@ -60,6 +60,7 @@ export function validateContact(body: unknown, now: number): ValidationResult {
   }
 
   const role = str(raw.role)
+  if (role.length > 64) return { ok: false, error: 'Invalid role.' }
 
   return {
     ok: true,

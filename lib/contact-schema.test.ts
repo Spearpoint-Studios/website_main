@@ -61,4 +61,16 @@ describe('validateContact', () => {
     if (result.ok !== true) throw new Error('expected success')
     expect(result.value.role).toBe('gameplay-programmer')
   })
+
+  it('accepts a role at exactly 64 characters', () => {
+    const role = 'a'.repeat(64)
+    const result = validateContact({ ...base, role }, NOW)
+    if (result.ok !== true) throw new Error('expected success')
+    expect(result.value.role).toBe(role)
+  })
+
+  it('rejects a role over 64 characters', () => {
+    const result = validateContact({ ...base, role: 'a'.repeat(65) }, NOW)
+    expect(result).toEqual({ ok: false, error: 'Invalid role.' })
+  })
 })
