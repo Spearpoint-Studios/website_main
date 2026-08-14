@@ -3,6 +3,29 @@
 # A failing build leaves the running site completely untouched.
 set -euo pipefail
 
+# --- Single-instance lock ----------------------------------------------------
+# Serialise every invocation, whether it came from the timer or from a human
+# running this by hand. Without it two runs race: one reaches "rm -rf $TARGET"
+# while the other is extracting or building into that same directory, and the
+# build dies with a storm of ENOENT errors on files that vanished underneath
+# it. That is not hypothetical -- it happened on the first real deploy, when a
+# manual run overlapped the timer.
+#
+# It is also the normal case, not an edge case: a Next.js build takes longer
+# than the timer's one-minute interval, so any hand-run deploy during a build
+# would collide.
+#
+# -n means "fail immediately rather than queue". A deploy that is already
+# running will pick up this same commit anyway, so a second one has nothing to
+# add and should simply step aside.
+LOCK=/var/lock/spearpoint-deploy.lock
+exec 9>"$LOCK"
+if ! flock -n 9; then
+  echo "another deploy is already running, skipping this run"
+  exit 0
+fi
+# --- End single-instance lock ------------------------------------------------
+
 ROOT=/var/www/spearpoint
 REPO="$ROOT/repo"
 RELEASES="$ROOT/releases"
