@@ -37,6 +37,13 @@ export const roles: Role[] = [
     summary: 'Discord, updates, and staying close to what players want.',
     open: true,
   },
+  {
+    slug: 'ui-artist',
+    title: 'UI Artist',
+    location: 'Remote',
+    summary: 'Interface art that stays readable on a phone screen.',
+    open: false,
+  },
 ]
 
 export function openRoles(): Role[] {
