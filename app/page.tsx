@@ -4,6 +4,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { GamesSection } from '@/components/games-section'
 import { CareersSection } from '@/components/careers-section'
+import { ContactSection } from '@/components/contact-form'
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
         <div className="shell">
           <GamesSection />
           <CareersSection />
+          <ContactSection />
         </div>
       </main>
       <SiteFooter />
