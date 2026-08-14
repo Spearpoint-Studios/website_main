@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { site } from '@/content/site'
 import { roleBySlug } from '@/content/roles'
+import { ScrollReveal } from '@/components/scroll-reveal'
 
 type Status = 'idle' | 'sending' | 'sent'
 
@@ -105,23 +106,27 @@ function ContactFormInner() {
 export function ContactSection() {
   return (
     <section className="section" id="contact">
-      <h2>Contact</h2>
-      <p className="lede">Questions, partnerships, or press. We read everything.</p>
-      <div className="contact-grid">
-        <Suspense fallback={<p className="lede">Loading the form.</p>}>
-          <ContactFormInner />
-        </Suspense>
-        <aside className="contact-aside">
-          <h3>Prefer Discord?</h3>
-          <p>
-            Most of our conversations happen there. Jump in and say hello, or send this form
-            and it reaches the same place.
-          </p>
-          <a className="button" href={site.discordUrl} target="_blank" rel="noreferrer noopener">
-            Join the Discord
-          </a>
-        </aside>
-      </div>
+      <ScrollReveal>
+        <h2>Contact</h2>
+        <p className="lede">Questions, partnerships, or press. We read everything.</p>
+        <div className="contact-grid">
+          <div className="card contact-card">
+            <Suspense fallback={<p className="lede">Loading the form.</p>}>
+              <ContactFormInner />
+            </Suspense>
+          </div>
+          <aside className="card contact-aside">
+            <h3>Prefer Discord?</h3>
+            <p>
+              Most of our conversations happen there. Jump in and say hello, or send this form
+              and it reaches the same place.
+            </p>
+            <a className="button" href={site.discordUrl} target="_blank" rel="noreferrer noopener">
+              Join the Discord
+            </a>
+          </aside>
+        </div>
+      </ScrollReveal>
     </section>
   )
 }

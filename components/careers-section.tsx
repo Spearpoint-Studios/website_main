@@ -1,36 +1,25 @@
 import Link from 'next/link'
-import { openRoles } from '@/content/roles'
+import { ScrollReveal } from '@/components/scroll-reveal'
 
 export function CareersSection() {
-  const roles = openRoles()
-
   return (
-    <section className="section" id="careers">
-      <h2>Careers</h2>
-      <p className="lede">
-        We are a small team, so everyone here owns something real. If that sounds right, we
-        would like to hear from you.
-      </p>
-      {roles.length === 0 ? (
-        <p className="lede">No open roles right now. Send us a message anyway if you think we should meet.</p>
-      ) : (
-        <div className="roles">
-          {roles.map((role) => (
-            <div className="role" key={role.slug}>
-              <div className="role-t">
-                <Link href={`/careers/${role.slug}`}>
-                  <b>{role.title}</b>
-                </Link>
-                <span>{role.summary}</span>
-              </div>
-              <span className="role-loc">{role.location}</span>
-              <Link className="role-go" href={`/?role=${role.slug}#contact`}>
-                Apply
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
+    <section className="section" id="careers-teaser">
+      <ScrollReveal>
+        <Link href="/careers" className="card card-teaser">
+          <div className="card-teaser-text">
+            <h2>Careers</h2>
+            <p className="lede">
+              We are a small team, and everyone here owns something real. See how to reach us
+              and what it is like to work with us.
+            </p>
+          </div>
+          <span className="card-teaser-go" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 6l6 6-6 6" />
+            </svg>
+          </span>
+        </Link>
+      </ScrollReveal>
     </section>
   )
 }
