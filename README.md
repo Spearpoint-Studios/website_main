@@ -20,26 +20,22 @@ python -m http.server 4300
 
 ## Deployment
 
-Production is an OVH VPS at `149.56.99.128` running Caddy, fronted by Cloudflare
-with the encryption mode set to Full (Strict). Caddy holds its own Let's Encrypt
-certificate, so traffic is encrypted browser to edge and edge to origin.
+Production is an OVH VPS at `149.56.99.128` running the Next.js app under
+systemd, behind Caddy, behind Cloudflare on Full (Strict).
 
-**Deploys are automatic.** Push to `main` and the change is live within about a
-minute. There is no build and no CI step.
-
-The VPS pulls rather than GitHub pushing, so no deploy credentials exist
-anywhere:
+Push to `main` and it is live within about a minute plus however long the
+build takes. A build that fails is discarded; the running site is left
+completely untouched.
 
 | Piece | Path |
 |---|---|
-| Web root, a clone of this repo | `/var/www/spearpoint` |
 | Deploy script | `/usr/local/bin/spearpoint-deploy` |
+| Rollback | `/usr/local/bin/spearpoint-rollback` |
 | Timer, runs every minute | `/etc/systemd/system/spearpoint-deploy.timer` |
-| Caddy config | `/etc/caddy/Caddyfile` |
-
-The deploy script fetches `origin/main` and hard-resets the working tree to it.
-Anything committed locally on the server is discarded on the next tick, so never
-edit files in `/var/www/spearpoint` directly.
+| App service | `/etc/systemd/system/spearpoint-web.service` |
+| Releases | `/var/www/spearpoint/releases/<sha>` |
+| Live release | `/var/www/spearpoint/current` |
+| Secrets | `/var/www/spearpoint/shared/.env` |
 
 ### Operations
 
@@ -50,10 +46,16 @@ sudo systemctl start spearpoint-deploy.service
 # what happened on recent deploys
 journalctl -u spearpoint-deploy.service -n 20
 
-# is the timer alive, when does it next fire
-systemctl list-timers spearpoint-deploy.timer
+# roll back to the previous release
+spearpoint-rollback
 ```
 
-Because the web root is a git clone, the `.git` directory sits inside the
-directory Caddy serves. The `hide` directive in the Caddyfile's `file_server`
-block is what keeps `/.git/config` from being world readable. Do not remove it.
+`DISCORD_WEBHOOK_URL` lives only in `shared/.env`. Anyone holding it can post
+to the studio's Discord channel, so it never goes in git, a pull request, or
+CI.
+
+Origin port 443 is firewalled to Cloudflare's published IP ranges. The
+contact form's rate limiter trusts the `CF-Connecting-IP` header to identify
+visitors, and that trust only holds because Cloudflare is the only thing
+that can reach the origin on 443. Do not remove or narrow that firewall rule
+without understanding this dependency.
