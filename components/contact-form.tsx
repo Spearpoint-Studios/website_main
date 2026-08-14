@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { site } from '@/content/site'
 import { roleBySlug } from '@/content/roles'
@@ -12,20 +12,20 @@ function ContactFormInner() {
   const roleSlug = params.get('role') ?? ''
   const role = roleSlug ? roleBySlug(roleSlug) : undefined
 
-  const [renderedAt, setRenderedAt] = useState(0)
+  const renderedAt = useRef(0)
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [subject, setSubject] = useState('')
+  const [subjectEdit, setSubjectEdit] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [website, setWebsite] = useState('')
 
-  useEffect(() => setRenderedAt(Date.now()), [])
-  useEffect(() => {
-    if (role) setSubject(`Application: ${role.title}`)
-  }, [role])
+  const defaultSubject = role ? `Application: ${role.title}` : ''
+  const subject = subjectEdit ?? defaultSubject
+
+  useEffect(() => { renderedAt.current = Date.now() }, [])
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault()
@@ -37,7 +37,7 @@ function ContactFormInner() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          name, email, subject, message, website, renderedAt,
+          name, email, subject, message, website, renderedAt: renderedAt.current,
           ...(role ? { role: role.slug } : {}),
         }),
       })
@@ -81,7 +81,7 @@ function ContactFormInner() {
 
       <div className="field">
         <label htmlFor="c-subject">Subject</label>
-        <input id="c-subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
+        <input id="c-subject" value={subject} onChange={(e) => setSubjectEdit(e.target.value)} />
       </div>
 
       <div className="field">
