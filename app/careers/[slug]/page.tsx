@@ -16,7 +16,18 @@ export async function generateMetadata(
   const { slug } = await params
   const role = roleBySlug(slug)
   if (!role) return { title: `Careers at ${site.name}` }
-  return { title: `${role.title} at ${site.name}`, description: role.summary }
+  return {
+    title: `${role.title} at ${site.name}`,
+    description: role.summary,
+    openGraph: {
+      title: `${role.title} at ${site.name}`,
+      description: role.summary,
+      url: `https://spearpointstudio.com/careers/${role.slug}`,
+      siteName: site.name,
+      images: ['/brand/og.jpg'],
+      type: 'website',
+    },
+  }
 }
 
 export default async function RolePage({ params }: { params: Promise<{ slug: string }> }) {
