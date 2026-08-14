@@ -1,4 +1,7 @@
 :root {
+  /* Dark palette. Reserved for the hero and the footer, which bookend every
+     page like Apple's own dark hero + dark footer pattern. Nothing below the
+     hero reads from these except through an explicit .hero / .ft scope. */
   --ground: #061A22;
   --surface: #0C242F;
   --elevated: #113141;
@@ -8,22 +11,30 @@
   --cyan: #5FD9E8;
   --teal: #35A7B8;
   --azure: #2E86C1;
+  --danger: #FF7A70;
+
+  /* Light palette. Everything below the hero, and the /careers page, which
+     has no hero and is light throughout. */
+  --l-ground: #FFFFFF;
+  --l-alt: #F5F5F7;
+  --l-text: #1D1D1F;
+  --l-muted: #6E6E73;
+  --l-line: #D2D2D7;
+  --l-accent: #0E7490;
+  --l-danger: #D32F2F;
 
   --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --measure: 62rem;
+  --measure: 76rem;
   --gutter: 2.75rem;
   --radius: 16px;
   --radius-sm: 10px;
 
-  /* Derived tones. Every colour on the page traces back to the nine tokens
-     above, mixed with each other or with transparency. Nothing new is
-     introduced here. */
+  /* Derived tones, dark side. */
   --muted-2: color-mix(in srgb, var(--muted) 60%, var(--ground) 40%);
-  --line-soft: color-mix(in srgb, var(--line) 55%, transparent);
-  --field: color-mix(in srgb, var(--line) 80%, var(--cyan) 20%);
   --cyan-wash: color-mix(in srgb, var(--cyan) 14%, transparent);
-  --cyan-ring: color-mix(in srgb, var(--cyan) 30%, transparent);
-  --shadow-cyan: color-mix(in srgb, var(--cyan) 40%, transparent);
+
+  /* Derived tones, light side. */
+  --l-accent-ring: color-mix(in srgb, var(--l-accent) 25%, transparent);
 }
 
 * { box-sizing: border-box; }
@@ -33,18 +44,31 @@ html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--ground);
-  color: var(--text);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--l-ground);
+  color: var(--l-text);
   font-family: var(--sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Sticky footer: header and footer keep their natural height, main grows to
+   fill whatever is left so the footer never floats above an empty void on a
+   short page (the /careers fix). */
+main { flex: 1 0 auto; }
 
 a { color: inherit; text-decoration: none; }
 
 .shell { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
 
 @media (max-width: 40rem) { :root { --gutter: 1.25rem; } }
+@media (min-width: 90rem) { :root { --gutter: 4rem; } }
+
+/* The hero keeps the pre-redesign content width. Only the hero: header,
+   footer, and every section below widen with the new --measure. */
+.hero .shell { max-width: 62rem; }
 
 .eyebrow {
   display: inline-flex;
@@ -57,91 +81,125 @@ a { color: inherit; text-decoration: none; }
   margin: 0 0 1rem;
 }
 
-.section { padding: 6rem 0; }
-.section + .section { border-top: 1px solid var(--line-soft); }
+.careers-page .eyebrow { color: var(--l-accent); }
 
-.section h2 {
-  margin: 0 0 0.6rem;
-  font-size: 1.75rem;
+/* sections, light ground, alternating rhythm. Bands are full width; the
+   inner .shell caps the readable column. No divider lines between sections,
+   by design, the ground change carries the rhythm instead. */
+.section { padding: 7rem 0; background: var(--l-ground); color: var(--l-text); }
+.section--alt { background: var(--l-alt); }
+
+@media (max-width: 40rem) {
+  .section { padding: 4.5rem 0; }
+}
+
+.lede { color: var(--l-muted); font-size: 0.9375rem; }
+
+.section-head { max-width: 40rem; margin: 0 auto 3rem; text-align: center; }
+
+.section-head h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.1;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 }
 
-.section .lede {
-  margin: 0 0 2.2rem;
-  color: var(--muted);
-  font-size: 0.9375rem;
-  max-width: 52ch;
+.section-head .lede {
+  margin: 0 auto;
+  max-width: 60ch;
+  font-size: 1.0625rem;
 }
 
-/* buttons */
+/* buttons: Apple's fully rounded pill. Light sections are the default;
+   .hero-cta flips border and label to white for the dark hero, the one
+   permitted change inside it. */
 .button {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, var(--cyan), var(--teal));
-  color: var(--ground);
-  border-radius: var(--radius-sm);
-  padding: 0.8rem 1.6rem;
+  background: transparent;
+  color: var(--l-text);
+  border: 1px solid var(--l-text);
+  border-radius: 980px;
+  padding: 0.85rem 1.6rem;
   font-size: 0.875rem;
-  font-weight: 700;
-  border: 0;
+  font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.button:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 10px 28px -12px var(--shadow-cyan); }
-.button:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
+.button:hover { background: var(--l-text); color: #FFFFFF; }
+.button:disabled { opacity: 0.5; cursor: default; }
 
-.button-ghost {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--line);
+.hero-cta .button { border-color: rgba(255, 255, 255, 0.85); color: #FFFFFF; }
+.hero-cta .button:hover { background: #FFFFFF; color: var(--ground); }
+
+/* Apple-style secondary action: an accent-coloured text link with a chevron
+   that nudges right on hover. Reserved for secondary actions, never paired
+   with a filled state, so it never fights the pill button for attention. */
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--l-accent);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.button-ghost:hover {
-  filter: none;
-  border-color: var(--cyan);
-  color: var(--cyan);
-  box-shadow: none;
-}
+.button-link-chevron { transition: transform 0.2s ease; }
+.button-link:hover .button-link-chevron { transform: translateX(3px); }
 
-:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--l-accent); outline-offset: 2px; }
+.hero :focus-visible, .ft :focus-visible { outline-color: var(--cyan); }
+.hd :focus-visible { outline-color: var(--cyan); }
+.hd.is-light :focus-visible { outline-color: var(--l-accent); }
 
-/* cards */
+/* cards, light ground: white, soft shadow, no hard border. Every consumer
+   (careers teaser, careers empty state, contact card and aside) sits below
+   the hero, so this is safe to define once for the whole light theme. */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: #FFFFFF;
+  border: 1px solid transparent;
   border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -20px rgba(0, 0, 0, 0.18);
 }
 
 a.card,
 .card-interactive {
-  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 a.card:hover,
 .card-interactive:hover {
-  border-color: var(--cyan);
   transform: translateY(-4px);
-  box-shadow: 0 20px 44px -24px var(--shadow-cyan);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 24px 48px -20px rgba(0, 0, 0, 0.22);
 }
 
-/* header */
+/* header: transparent over the dark hero, light translucent with a blur and
+   a hairline border once scrolled past it, and that same light state from
+   the very start on /careers (no hero there). Text and the logo mark follow. */
 .hd {
   position: sticky;
   top: 0;
   z-index: 40;
   background: transparent;
   border-bottom: 1px solid transparent;
-  transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+  color: var(--text);
+  transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease, color 0.3s ease;
 }
 
-.hd.is-scrolled {
-  background: color-mix(in srgb, var(--ground) 86%, transparent);
+.hd.is-light {
+  background: color-mix(in srgb, var(--l-ground) 82%, transparent);
   backdrop-filter: blur(12px);
-  border-bottom-color: var(--line);
+  border-bottom-color: var(--l-line);
+  color: var(--l-text);
 }
 
 .hd-in {
@@ -156,7 +214,13 @@ a.card:hover,
 .hd-brand { display: flex; align-items: center; gap: 0.65rem; }
 .hd-brand b { font-size: 0.9375rem; font-weight: 700; letter-spacing: -0.015em; }
 
+/* The brand mark is baked white. Invert it to read on the light header, the
+   single most likely thing to break in this pass. */
+.hd-brand-mark { transition: filter 0.3s ease; }
+.hd.is-light .hd-brand-mark { filter: invert(1); }
+
 .hd-nav { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--muted); }
+.hd.is-light .hd-nav { color: var(--l-muted); }
 
 .hd-nav a {
   position: relative;
@@ -177,18 +241,23 @@ a.card:hover,
   transition: transform 0.25s ease;
 }
 
+.hd.is-light .hd-nav a::after { background: var(--l-accent); }
+
 .hd-nav a:hover { color: var(--text); }
+.hd.is-light .hd-nav a:hover { color: var(--l-text); }
 .hd-nav a:hover::after,
 .hd-nav a.is-active::after { transform: scaleX(1); }
 .hd-nav a.is-active { color: var(--text); }
+.hd.is-light .hd-nav a.is-active { color: var(--l-text); }
 
 @media (max-width: 34rem) {
   .hd-in { flex-direction: column; align-items: flex-start; }
   .hd-nav { gap: 1.1rem; }
 }
 
-/* footer */
-.ft { border-top: 1px solid var(--line); padding: 2.5rem 0; margin-top: 1rem; }
+/* footer: stays dark. Body is light by default now, so the footer needs its
+   own explicit dark background rather than inheriting it. */
+.ft { background: var(--ground); color: var(--text); border-top: 1px solid var(--line); padding: 2.5rem 0; margin-top: 1rem; }
 
 .ft-in {
   display: flex;
@@ -206,7 +275,9 @@ a.card:hover,
 .social svg { width: 18px; height: 18px; display: block; }
 .social a:hover { color: var(--cyan); }
 
-/* hero */
+/* hero: unchanged ground, backdrop, entrance stagger, ambient drift, and
+   scroll cue. Text colour is now pinned explicitly since body no longer
+   defaults to the dark palette. */
 .hero {
   position: relative;
   min-height: 88vh;
@@ -214,6 +285,7 @@ a.card:hover,
   align-items: center;
   overflow: hidden;
   padding: 7rem 0 3rem;
+  color: var(--text);
 }
 
 .hero-bg {
@@ -308,6 +380,50 @@ a.card:hover,
 
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
+/* development section, home page: three licensed stock photographs, brand
+   cyan duotone. Not photographs of Spearpoint, so the copy stays about the
+   craft, never "our studio" or "our team". */
+.dev-media {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+@media (max-width: 48rem) {
+  .dev-media { grid-template-columns: 1fr; }
+}
+
+.dev-media-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  aspect-ratio: 4 / 3;
+}
+
+.dev-media-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.85) contrast(1.1) brightness(0.92);
+  transition: filter 0.4s ease;
+}
+
+.dev-media-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cyan);
+  mix-blend-mode: color;
+  opacity: 0.88;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.dev-media-item:hover img { filter: grayscale(0.3) contrast(1.02) brightness(1); }
+.dev-media-item:hover::after { opacity: 0.4; }
+
 /* careers teaser card, home page */
 .card-teaser {
   display: flex;
@@ -317,7 +433,7 @@ a.card:hover,
   padding: 2.5rem;
 }
 
-.card-teaser-text h2 { margin: 0 0 0.6rem; }
+.card-teaser-text h2 { margin: 0 0 0.6rem; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
 .card-teaser-text .lede { margin: 0; max-width: 44ch; }
 
 .card-teaser-go {
@@ -327,15 +443,15 @@ a.card:hover,
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
-  border: 1px solid var(--line);
-  color: var(--cyan);
+  border: 1px solid var(--l-line);
+  color: var(--l-accent);
 }
 
 @media (max-width: 40rem) {
   .card-teaser { flex-direction: column; align-items: flex-start; }
 }
 
-/* careers page, empty state */
+/* careers page, empty state. No hero on this page, light throughout. */
 .careers-page { padding: 8rem 0 6rem; max-width: 46rem; }
 
 .careers-empty { padding: 2.75rem; }
@@ -347,12 +463,13 @@ a.card:hover,
   line-height: 1.15;
 }
 
-.careers-empty p { margin: 0 0 1rem; color: var(--muted); font-size: 1rem; max-width: 42rem; }
+.careers-empty p { margin: 0 0 1rem; color: var(--l-muted); font-size: 1rem; max-width: 42rem; }
 .careers-empty p:last-of-type { margin-bottom: 0; }
 
 .careers-empty-actions {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 1.5rem;
   flex-wrap: wrap;
   margin-top: 1.75rem;
 }
@@ -366,24 +483,24 @@ a.card:hover,
 .contact-aside { padding: 2rem; }
 
 .field { display: grid; gap: 0.35rem; margin-bottom: 0.9rem; }
-.field label { font-size: 0.8125rem; font-weight: 600; color: var(--muted); }
+.field label { font-size: 0.8125rem; font-weight: 600; color: var(--l-muted); }
 
 .field input, .field textarea {
   font: inherit;
   font-size: 0.875rem;
   padding: 0.7rem 0.85rem;
-  border: 1px solid var(--field);
+  border: 1px solid var(--l-line);
   border-radius: var(--radius-sm);
-  background: var(--elevated);
-  color: var(--text);
+  background: var(--l-ground);
+  color: var(--l-text);
   width: 100%;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .field input:focus, .field textarea:focus {
   outline: none;
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px var(--cyan-ring);
+  border-color: var(--l-accent);
+  box-shadow: 0 0 0 3px var(--l-accent-ring);
 }
 
 .field textarea { resize: vertical; }
@@ -399,21 +516,26 @@ a.card:hover,
   white-space: nowrap;
 }
 
+/* Danger red text on a plain white background, computed at 4.98:1 (WCAG
+   relative luminance), comfortably clear of the 4.5:1 floor. Background is
+   pinned to white rather than tinted, because tinting it toward red lowers
+   its luminance and erodes that margin. */
 .form-error {
   margin: 0 0 1rem;
   padding: 0.7rem 0.9rem;
-  border-left: 3px solid var(--azure);
+  border-left: 3px solid var(--l-danger);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: color-mix(in srgb, var(--azure) 16%, var(--elevated));
-  color: var(--text);
+  background: var(--l-ground);
+  color: var(--l-danger);
+  font-weight: 600;
   font-size: 0.875rem;
 }
 
 .sent h3 { margin: 0 0 0.4rem; font-size: 1.125rem; font-weight: 700; }
-.sent p { margin: 0; color: var(--muted); font-size: 0.9375rem; }
+.sent p { margin: 0; color: var(--l-muted); font-size: 0.9375rem; }
 
 .contact-aside h3 { margin: 0 0 0.5rem; font-size: 0.9375rem; font-weight: 700; }
-.contact-aside p { margin: 0 0 1.4rem; font-size: 0.875rem; color: var(--muted-2); }
+.contact-aside p { margin: 0 0 1.4rem; font-size: 0.875rem; color: var(--l-muted); }
 
 /* motion */
 @media (prefers-reduced-motion: reduce) {

@@ -30,7 +30,7 @@ export default function Home() {
             <div className="hero-cta">
               <a className="button" href="#contact">Get in touch</a>
               <a
-                className="button button-ghost"
+                className="button"
                 href={site.discordUrl}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -58,10 +58,8 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="shell">
-          <CareersSection />
-          <ContactSection />
-        </div>
+        <CareersSection />
+        <ContactSection />
       </main>
       <SiteFooter />
     </>

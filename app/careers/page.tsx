@@ -37,8 +37,9 @@ export default function CareersPage() {
             <a className="button" href={site.discordUrl} target="_blank" rel="noreferrer noopener">
               Say hello on Discord
             </a>
-            <Link className="button button-ghost" href="/#contact">
+            <Link className="button-link" href="/#contact">
               Send a message
+              <span aria-hidden="true" className="button-link-chevron">&rsaquo;</span>
             </Link>
           </div>
         </div>

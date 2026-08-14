@@ -6,28 +6,46 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { site } from '@/content/site'
 
-const SCROLL_THRESHOLD = 40
+// Header height overlaps the page by roughly this much while sticky, so the
+// hero is considered "passed" a little before its own box literally leaves
+// the viewport, matching what the eye actually sees.
+const HEADER_OVERLAP_PX = 72
 
 export function SiteHeader() {
   const pathname = usePathname()
-  const [scrolled, setScrolled] = useState(false)
+  const isLightPage = pathname !== '/'
+  const [pastHero, setPastHero] = useState(false)
 
   useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > SCROLL_THRESHOLD)
+    const hero = document.querySelector('.hero')
+    if (!hero || typeof IntersectionObserver === 'undefined') {
+      // No hero on this page (e.g. /careers): nothing to observe, the header
+      // stays in its light state throughout, decided below by isLightPage.
+      return
     }
-    // Intentionally no immediate call here. Reading window.scrollY during the
-    // effect body would fire the setter synchronously on mount; the listener
-    // below updates state only in response to real scroll events instead.
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setPastHero(!entry.isIntersecting),
+      { rootMargin: `-${HEADER_OVERLAP_PX}px 0px 0px 0px`, threshold: 0 },
+    )
+    observer.observe(hero)
+    return () => observer.disconnect()
+  }, [pathname])
+
+  const isLight = isLightPage || pastHero
 
   return (
-    <header className={scrolled ? 'hd is-scrolled' : 'hd'}>
+    <header className={isLight ? 'hd is-light' : 'hd'}>
       <div className="shell hd-in">
         <Link href="/" className="hd-brand">
-          <Image src="/brand/mark.png" alt="" width={22} height={22} priority />
+          <Image
+            src="/brand/mark.png"
+            alt=""
+            width={22}
+            height={22}
+            priority
+            className="hd-brand-mark"
+          />
           <b>{site.name}</b>
         </Link>
         <nav className="hd-nav">
