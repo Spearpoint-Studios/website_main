@@ -10,12 +10,19 @@ WorkingDirectory=/var/www/spearpoint/current
 EnvironmentFile=/var/www/spearpoint/shared/.env
 Environment=NODE_ENV=production
 Environment=PORT=3000
-# HOSTNAME=127.0.0.1 keeps Node bound to loopback only, off the public
-# interface. Caddy is the only thing that reverse-proxies to it, so this
-# is the difference between "reachable exclusively through Caddy" and
-# "reachable directly by anyone who resolves the box's IP".
+# Bind to loopback only, off the public interface. Caddy is the only thing
+# that reverse-proxies to it, so this is the difference between "reachable
+# exclusively through Caddy" and "reachable directly by anyone who resolves
+# the box's IP". Direct reachability would also let a caller forge the
+# CF-Connecting-IP header that the contact form's rate limiter trusts.
+#
+# The hostname MUST be passed as an explicit flag. Next 16 does NOT honour the
+# HOSTNAME environment variable here: with Environment=HOSTNAME=127.0.0.1
+# alone, `ss -tlnp` showed the server listening on *:3000 and the startup log
+# advertised the public address. After any change to this line, verify with
+# `ss -tlnp | grep :3000` — it must read 127.0.0.1:3000, never *:3000.
 Environment=HOSTNAME=127.0.0.1
-ExecStart=/usr/bin/npm run start
+ExecStart=/usr/bin/npm run start -- --hostname 127.0.0.1 --port 3000
 Restart=always
 RestartSec=3
 
