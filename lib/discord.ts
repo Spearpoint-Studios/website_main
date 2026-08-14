@@ -29,11 +29,17 @@ export async function sendToDiscord(
     const response = await fetchImpl(webhookUrl, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ embeds: [buildEmbed(input)] }),
+      // allowed_mentions guarantees a submitted @everyone or @here can never
+      // notify the whole server, even though embed content does not ping
+      // today.
+      body: JSON.stringify({ embeds: [buildEmbed(input)], allowed_mentions: { parse: [] } }),
     })
     return response.ok
   } catch (error) {
-    console.error('[contact] Discord delivery failed', error)
+    // Log only the message, never the whole error object: a future
+    // fetch/undici error can carry the request URL (the webhook URL) in its
+    // properties, and that must never land in the systemd journal.
+    console.error('[contact] Discord delivery failed', error instanceof Error ? error.message : String(error))
     return false
   }
 }

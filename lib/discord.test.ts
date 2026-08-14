@@ -51,6 +51,14 @@ describe('sendToDiscord', () => {
     expect((init as RequestInit).method).toBe('POST')
   })
 
+  it('suppresses mentions in the posted payload', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status: 204 }))
+    await sendToDiscord(input, 'https://discord.test/hook', fetchImpl as never)
+    const [, init] = fetchImpl.mock.calls[0]
+    const payload = JSON.parse((init as RequestInit).body as string)
+    expect(payload.allowed_mentions).toEqual({ parse: [] })
+  })
+
   it('reports failure on a non-2xx response', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(new Response('nope', { status: 500 }))
     expect(await sendToDiscord(input, 'https://discord.test/hook', fetchImpl as never)).toBe(false)
@@ -59,5 +67,21 @@ describe('sendToDiscord', () => {
   it('reports failure when the request throws', async () => {
     const fetchImpl = vi.fn().mockRejectedValue(new Error('network down'))
     expect(await sendToDiscord(input, 'https://discord.test/hook', fetchImpl as never)).toBe(false)
+  })
+
+  it('logs only the error message, never the whole error object', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const secretUrl = 'https://discord.test/hook/secret-token'
+    const error = new Error('network down') as Error & { request?: { url: string } }
+    error.request = { url: secretUrl }
+    const fetchImpl = vi.fn().mockRejectedValue(error)
+
+    await sendToDiscord(input, secretUrl, fetchImpl as never)
+
+    expect(consoleError).toHaveBeenCalledWith('[contact] Discord delivery failed', 'network down')
+    for (const call of consoleError.mock.calls) {
+      expect(JSON.stringify(call)).not.toContain(secretUrl)
+    }
+    consoleError.mockRestore()
   })
 })
