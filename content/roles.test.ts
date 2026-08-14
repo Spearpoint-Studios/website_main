@@ -10,7 +10,14 @@ describe('roles', () => {
     }
   })
 
-  it('finds a role by slug', () => {
+  it('returns an empty array from openRoles, so the careers page renders its empty state', () => {
+    expect(openRoles()).toEqual([])
+  })
+
+  // There is nothing to look up while roles is empty. This stays written so it
+  // resumes automatically the moment a real role is added, instead of being
+  // rewritten from memory at that point.
+  it.skipIf(roles.length === 0)('finds a role by slug', () => {
     const first = roles[0]
     expect(roleBySlug(first.slug)?.title).toBe(first.title)
   })
