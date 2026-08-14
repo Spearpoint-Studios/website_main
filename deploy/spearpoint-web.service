@@ -1,0 +1,27 @@
+[Unit]
+Description=Spearpoint Studio website
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/spearpoint/current
+EnvironmentFile=/var/www/spearpoint/shared/.env
+Environment=NODE_ENV=production
+Environment=PORT=3000
+# HOSTNAME=127.0.0.1 keeps Node bound to loopback only, off the public
+# interface. Caddy is the only thing that reverse-proxies to it, so this
+# is the difference between "reachable exclusively through Caddy" and
+# "reachable directly by anyone who resolves the box's IP".
+Environment=HOSTNAME=127.0.0.1
+ExecStart=/usr/bin/npm run start
+Restart=always
+RestartSec=3
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,47 @@
+# Spearpoint Studio website
+#
+# Caddy no longer serves a directory. It reverse proxies to the Next.js
+# process on loopback, which permanently removes the class of problem where
+# repo metadata under the web root becomes fetchable.
+#
+# ---------------------------------------------------------------------------
+# FIREWALL DEPENDENCY (do not remove the firewall rule that backs this)
+#
+# Origin port 443 is restricted at the firewall to Cloudflare's published IP
+# ranges. That firewall rule is configured by the controller, not by this
+# file, but this Caddyfile depends on it and would be unsafe without it.
+#
+# Why: the contact form's rate limiter trusts the CF-Connecting-IP header to
+# identify the visitor. That header is only trustworthy because Cloudflare
+# is the only thing that can reach the origin on 443 to set it. If the
+# origin were reachable directly, anyone who resolves the box's IP could
+# send their own CF-Connecting-IP header and forge any identity they like,
+# defeating the rate limiter entirely and turning the contact form into an
+# unlimited relay into the studio's Discord.
+#
+# Do not "simplify" or remove the firewall restriction without understanding
+# that this is what it protects.
+# ---------------------------------------------------------------------------
+
+spearpointstudio.com, www.spearpointstudio.com {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	# The contact API enforces a 64KB body cap in application code, but that
+	# check only runs after Node has already started buffering the request.
+	# Rejecting oversized bodies here means a multi-gigabyte POST never
+	# reaches the Node process at all. That matters because the VPS has
+	# 3.7GB of RAM and the service is configured to restart on crash, which
+	# makes a repeated-crash denial of service the cheapest attack available
+	# without this edge limit.
+	request_body {
+		max_size 1MB
+	}
+
+	reverse_proxy 127.0.0.1:3000
+}
