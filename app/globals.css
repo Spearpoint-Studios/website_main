@@ -380,49 +380,41 @@ a.card:hover,
 
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-/* development section, home page: three licensed stock photographs, brand
-   cyan duotone. Not photographs of Spearpoint, so the copy stays about the
-   craft, never "our studio" or "our team". */
-.dev-media {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-top: 3rem;
-}
-
-@media (max-width: 48rem) {
-  .dev-media { grid-template-columns: 1fr; }
-}
-
-.dev-media-item {
-  position: relative;
-  overflow: hidden;
+/* work-in-progress showcase, home page.
+   This is the studio's own render, so it carries NO duotone. The previous
+   stock photographs were tinted cyan to disguise the fact that they were
+   bought and mismatched. Real work should be seen exactly as rendered, so
+   the only treatment here is a frame and a restrained hover lift. */
+.showcase {
+  margin: 3rem 0 0;
   border-radius: var(--radius);
-  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--l-line);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-.dev-media-item img {
+.showcase img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   display: block;
-  filter: grayscale(0.85) contrast(1.1) brightness(0.92);
-  transition: filter 0.4s ease;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
-.dev-media-item::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--cyan);
-  mix-blend-mode: color;
-  opacity: 0.88;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
+.showcase:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 20px 44px rgba(0, 0, 0, 0.12);
 }
 
-.dev-media-item:hover img { filter: grayscale(0.3) contrast(1.02) brightness(1); }
-.dev-media-item:hover::after { opacity: 0.4; }
+@media (prefers-reduced-motion: reduce) {
+  .showcase,
+  .showcase:hover {
+    transform: none;
+    transition: none;
+  }
+}
 
 /* careers teaser card, home page */
 .card-teaser {
