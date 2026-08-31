@@ -59,6 +59,8 @@ body {
    short page (the /careers fix). */
 main { flex: 1 0 auto; }
 
+section[id], [id]:target { scroll-margin-top: 6rem; }
+
 a { color: inherit; text-decoration: none; }
 
 .shell { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
@@ -186,8 +188,10 @@ a.card:hover,
    a hairline border once scrolled past it, and that same light state from
    the very start on /careers (no hero there). Text and the logo mark follow. */
 .hd {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 40;
   background: transparent;
   border-bottom: 1px solid transparent;
@@ -444,21 +448,22 @@ a.card:hover,
 }
 
 /* careers page, empty state. No hero on this page, light throughout. */
-.careers-page { padding: 8rem 0 6rem; max-width: 46rem; }
+.careers-page { padding-top: 8rem; padding-bottom: 6rem; max-width: 46rem; }
 
-.careers-empty { padding: 2.75rem; }
+.empty-state { padding: 2.75rem; }
 
-.careers-empty h1 {
+.empty-state h1,
+.empty-state h2 {
   margin: 0 0 1.1rem;
   font-size: clamp(1.9rem, 4vw, 2.5rem);
   letter-spacing: -0.03em;
   line-height: 1.15;
 }
 
-.careers-empty p { margin: 0 0 1rem; color: var(--l-muted); font-size: 1rem; max-width: 42rem; }
-.careers-empty p:last-of-type { margin-bottom: 0; }
+.empty-state p { margin: 0 0 1rem; color: var(--l-muted); font-size: 1rem; max-width: 42rem; }
+.empty-state p:last-of-type { margin-bottom: 0; }
 
-.careers-empty-actions {
+.empty-state-actions {
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -552,3 +557,157 @@ a.card:hover,
     transform: none !important;
   }
 }
+
+.blog-page { padding-top: 9rem; padding-bottom: 6rem; }
+.post-page { padding-top: 9rem; padding-bottom: 6rem; max-width: 46rem; }
+
+.blog-page .eyebrow,
+.post-page .eyebrow { color: var(--l-accent); }
+
+.page-head { max-width: 46rem; margin: 0 0 3.5rem; }
+
+.page-title {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.page-head .lede { margin: 0; font-size: 1.0625rem; }
+
+.empty-state { max-width: 46rem; }
+
+.post-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: start; }
+
+@media (min-width: 40rem) { .post-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 64rem) { .post-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.post-card { display: flex; flex-direction: column; overflow: hidden; }
+
+.post-card-cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--l-alt);
+  border-bottom: 1px solid var(--l-line);
+}
+
+.post-card-cover img { object-fit: cover; }
+
+.post-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 1.5rem;
+}
+
+.post-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--l-accent);
+  border: 1px solid var(--l-accent-ring);
+  border-radius: 980px;
+  padding: 0.2rem 0.6rem;
+}
+
+.post-card-title {
+  margin: 0.35rem 0 0;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.post-card-date { font-size: 0.8125rem; color: var(--l-muted); }
+.post-card-excerpt { margin: 0.25rem 0 0; font-size: 0.9375rem; color: var(--l-muted); }
+
+.section-foot { margin-top: 2.75rem; display: flex; justify-content: center; }
+
+.post-head { margin-bottom: 2.5rem; }
+
+.post-title {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4.5vw, 2.9rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.post-date { font-size: 0.9375rem; color: var(--l-muted); }
+
+.post-cover { margin: 0 0 3rem; }
+
+.prose { font-size: 1.0625rem; }
+.prose > *:first-child { margin-top: 0; }
+.prose > *:last-child { margin-bottom: 0; }
+.prose p { margin: 0 0 1.4rem; }
+
+.prose h2 {
+  margin: 2.75rem 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.prose h3 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.prose ul, .prose ol { margin: 0 0 1.4rem; padding-left: 1.4rem; }
+.prose li { margin: 0 0 0.5rem; }
+.prose strong { font-weight: 700; }
+
+.prose a {
+  color: var(--l-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.prose blockquote {
+  margin: 0 0 1.4rem;
+  padding-left: 1.2rem;
+  border-left: 3px solid var(--l-line);
+  color: var(--l-muted);
+}
+
+.prose figure { margin: 2rem 0; }
+.prose figcaption { margin-top: 0.6rem; font-size: 0.8125rem; color: var(--l-muted); }
+.prose img { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); }
+
+.post-foot { margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid var(--l-line); }
+
+@media (max-width: 34rem) {
+  .hero { padding-top: 8.5rem; }
+  .blog-page, .post-page { padding-top: 8.5rem; }
+}
+
+.role-list { display: grid; gap: 1.25rem; }
+
+.role-card { padding: 2rem; }
+
+.role-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.3125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.role-location {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--l-muted);
+}
+
+.role-summary { margin: 0 0 1rem; font-size: 1rem; }
+.role-detail { margin: 0 0 1rem; font-size: 0.9375rem; color: var(--l-muted); }
+.role-actions { margin-top: 1.5rem; }

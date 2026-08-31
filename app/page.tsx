@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { site } from '@/content/site'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { DevSection } from '@/components/dev-section'
+import { LatestPosts } from '@/components/latest-posts'
 import { CareersSection } from '@/components/careers-section'
 import { ContactSection } from '@/components/contact-form'
 
@@ -59,7 +59,7 @@ export default function Home() {
           </div>
         </section>
 
-        <DevSection />
+        <LatestPosts />
         <CareersSection />
         <ContactSection />
       </main>
