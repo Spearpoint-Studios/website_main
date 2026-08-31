@@ -41,8 +41,8 @@ export default function BlogPage() {
           <div className="card empty-state">
             <h2>Nothing posted yet</h2>
             <p>
-              The first post is being written. This page updates the moment that changes, so it
-              is worth a second look later.
+              We would rather post when there is something real to show than fill this page on a
+              schedule. It updates the moment that changes, so it is worth a second look later.
             </p>
             <p>
               In the meantime, the day-to-day conversation happens in Discord, and you are

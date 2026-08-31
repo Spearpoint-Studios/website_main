@@ -1,14 +1,6 @@
 import type { PostModule } from './types'
 
-import * as buildingTheForest from './2026-08-15-building-the-forest'
-import * as aFenceAndAViaduct from './2026-08-22-a-fence-and-a-viaduct'
-import * as thisSiteHasADevlog from './2026-08-31-this-site-has-a-devlog'
-
-const registry: PostModule[] = [
-  buildingTheForest,
-  aFenceAndAViaduct,
-  thisSiteHasADevlog,
-]
+const registry: PostModule[] = []
 
 export function allPosts(): PostModule[] {
   return [...registry].sort((a, b) => {

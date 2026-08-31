@@ -3,6 +3,8 @@ import { site } from '@/content/site'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { LatestPosts } from '@/components/latest-posts'
+import { DevSection } from '@/components/dev-section'
+import { allPosts } from '@/content/posts'
 import { CareersSection } from '@/components/careers-section'
 import { ContactSection } from '@/components/contact-form'
 
@@ -59,7 +61,7 @@ export default function Home() {
           </div>
         </section>
 
-        <LatestPosts />
+        {allPosts().length > 0 ? <LatestPosts /> : <DevSection />}
         <CareersSection />
         <ContactSection />
       </main>

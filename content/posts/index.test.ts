@@ -11,8 +11,8 @@ const DATE_PREFIX = /^\d{4}-\d{2}-\d{2}-/
 const DAY_MS = 24 * 60 * 60 * 1000
 
 describe('posts registry', () => {
-  it('registers at least one post, so every assertion below has something to check', () => {
-    expect(allPosts().length).toBeGreaterThan(0)
+  it('registers no posts right now, so /blog renders its empty state', () => {
+    expect(allPosts()).toEqual([])
   })
 
   it('has unique slugs', () => {
@@ -80,7 +80,10 @@ describe('posts registry', () => {
 describe('latestPosts', () => {
   it('returns no more than the requested count', () => {
     expect(latestPosts(2).length).toBeLessThanOrEqual(2)
-    expect(latestPosts(1)).toHaveLength(1)
+  })
+
+  it('returns an empty array while no posts are registered', () => {
+    expect(latestPosts(3)).toEqual([])
   })
 
   it('returns the newest posts, in the same order as allPosts', () => {
@@ -102,5 +105,9 @@ describe('postBySlug', () => {
   it('returns undefined for a slug that is not registered', () => {
     expect(postBySlug('not-a-real-post')).toBeUndefined()
     expect(postBySlug('')).toBeUndefined()
+  })
+
+  it('returns undefined for anything while no posts are registered', () => {
+    expect(postBySlug('building-the-forest')).toBeUndefined()
   })
 })
