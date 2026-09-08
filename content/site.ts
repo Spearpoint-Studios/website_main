@@ -1,8 +1,8 @@
 export const site = {
   name: 'Spearpoint Studio',
-  tagline: 'We build Roblox games people stay in',
+  tagline: 'We build games people enjoy',
   description:
-    'Spearpoint Studio designs, builds, and runs experiences on Roblox. Small team, shipped work, and a community we actually talk to.',
+    'Spearpoint Studio designs, builds, and runs the experiences it ships. Small team, shipped work, and a community we actually talk to.',
 
   discordUrl: 'https://discord.gg/spearpoint',
   twitterUrl: 'https://x.com/SpearpointNV',

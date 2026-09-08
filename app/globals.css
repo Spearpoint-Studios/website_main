@@ -322,7 +322,6 @@ a.card:hover,
   z-index: 1;
 }
 
-.hero-eyebrow,
 .hero-title,
 .hero-lede,
 .hero-cta {
@@ -330,8 +329,7 @@ a.card:hover,
   animation: riseIn 0.7s cubic-bezier(0.16, 0.8, 0.3, 1) forwards;
 }
 
-.hero-eyebrow { animation-delay: 0ms; }
-.hero-title { animation-delay: 80ms; }
+.hero-title { animation-delay: 0ms; }
 .hero-lede { animation-delay: 160ms; }
 .hero-cta { animation-delay: 240ms; }
 
@@ -548,7 +546,6 @@ a.card:hover,
      to its final, fully visible state here. Disabling the animation alone
      leaves the base opacity/transform in place and hides the content
      forever, which is the one bug this block exists to prevent. */
-  .hero-eyebrow,
   .hero-title,
   .hero-lede,
   .hero-cta,

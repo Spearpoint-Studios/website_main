@@ -27,7 +27,6 @@ export default function Home() {
           </div>
 
           <div className="shell hero-content">
-            <p className="eyebrow hero-eyebrow">Roblox game studio</p>
             <h1 className="hero-title">{site.tagline}</h1>
             <p className="hero-lede">{site.description}</p>
             <div className="hero-cta">
