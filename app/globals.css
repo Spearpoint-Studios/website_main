@@ -708,3 +708,160 @@ a.card:hover,
 .role-summary { margin: 0 0 1rem; font-size: 1rem; }
 .role-detail { margin: 0 0 1rem; font-size: 0.9375rem; color: var(--l-muted); }
 .role-actions { margin-top: 1.5rem; }
+
+/* ---------- Wiki ---------- */
+
+.wiki-page { padding-top: 9rem; padding-bottom: 6rem; }
+.wiki-article { padding-top: 9rem; padding-bottom: 6rem; max-width: 46rem; }
+.wiki-page .eyebrow, .wiki-article .eyebrow { color: var(--l-accent); }
+
+.wiki-crumbs {
+  font-size: 0.875rem;
+  color: var(--l-muted);
+  margin: 0 0 2rem;
+}
+.wiki-crumbs a { color: var(--l-accent); text-decoration: none; }
+.wiki-crumbs a:hover { text-decoration: underline; }
+
+/* Search ------------------------------------------------------------------ */
+
+.wiki-search { margin: 0 0 3.5rem; }
+
+/* Visually hidden rather than absent: the input still needs a label for
+   screen readers, but the placeholder carries the meaning for sighted users. */
+.wiki-search-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.wiki-search-input {
+  width: 100%;
+  padding: 0.875rem 1.125rem;
+  font: inherit;
+  font-size: 1rem;
+  color: inherit;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.wiki-search-input:focus {
+  outline: none;
+  border-color: var(--l-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--l-accent) 18%, transparent);
+}
+
+.wiki-search-status {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: var(--l-muted);
+}
+
+.wiki-results { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+
+.wiki-result {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem 1.125rem;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius);
+  background: #FFFFFF;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.wiki-result:hover { border-color: var(--l-accent); transform: translateY(-2px); }
+
+.wiki-result-category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--l-accent);
+}
+.wiki-result-title { font-weight: 600; font-size: 1.0625rem; }
+.wiki-result-snippet { font-size: 0.9375rem; color: var(--l-muted); line-height: 1.5; }
+
+.wiki-no-results {
+  margin: 1.25rem 0 0;
+  padding: 1.25rem;
+  border: 1px dashed rgba(0, 0, 0, 0.16);
+  border-radius: var(--radius);
+  color: var(--l-muted);
+  font-size: 0.9375rem;
+}
+.wiki-no-results p { margin: 0 0 0.5rem; }
+.wiki-no-results p:last-child { margin-bottom: 0; }
+
+/* Index ------------------------------------------------------------------- */
+
+.wiki-index { display: grid; gap: 3rem; }
+.wiki-index-heading {
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.wiki-index-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+}
+.wiki-card {
+  display: grid;
+  gap: 0.375rem;
+  padding: 1.25rem;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+.wiki-card-title { font-weight: 600; font-size: 1.0625rem; }
+.wiki-card-summary { font-size: 0.9375rem; color: var(--l-muted); line-height: 1.55; }
+
+/* Article ----------------------------------------------------------------- */
+
+.wiki-related { margin: 4rem 0 0; }
+.wiki-related-heading {
+  margin: 0 0 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.wiki-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9375rem;
+}
+.wiki-table th,
+.wiki-table td {
+  text-align: left;
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  vertical-align: top;
+}
+.wiki-table th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--l-muted);
+}
+.wiki-table-note { font-size: 0.875rem; color: var(--l-muted); }
+
+/* Tables are the one thing here that cannot reflow, so let them scroll rather
+   than forcing the whole page wide on a phone. */
+@media (max-width: 34rem) {
+  .wiki-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .wiki-table-note { white-space: normal; }
+}
