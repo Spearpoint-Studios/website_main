@@ -6,8 +6,8 @@ export const page: WikiPage = {
     title: 'Playing as a dinosaur',
     category: 'Dinosaurs',
     summary:
-      'How dinosaur access works, what protects a contained animal, and what changes when one goes rogue.',
-    keywords: ['dino', 'animals', 'species', 'gamepass', 'game pass', 'unlock', 'morph', 'rogue'],
+      'How dinosaur access works, the keybinds, what protects a contained animal, and what changes when one goes rogue.',
+    keywords: ['dino', 'animals', 'species', 'gamepass', 'game pass', 'unlock', 'morph', 'rogue', 'keybinds', 'controls', 'roar', 'sniff'],
     order: 0,
   },
   blocks: [
@@ -36,11 +36,39 @@ export const page: WikiPage = {
       body:
         'A dinosaur can carry more than one of these at once, and satisfying any single one is enough.',
     },
+    { kind: 'heading', text: 'Keybinds' },
+    {
+      kind: 'text',
+      body:
+        'Playing an animal replaces the entire human control set. Sprint and crouch are gone, both attacks are on the mouse, and the roar is spread across the number row.',
+    },
+    {
+      kind: 'table',
+      columns: ['Key', 'Action'],
+      rows: [
+        ['Left mouse', 'Primary attack'],
+        ['Right mouse', 'Secondary attack'],
+        ['Q', { text: 'Sniff', note: 'Picks up nearby scent trails' }],
+        ['1 – 9', { text: 'Roar', note: 'Each number is a different call' }],
+        ['H', 'Sit'],
+        ['B', { text: 'Pack invite', note: 'Invites a nearby animal to your pack' }],
+        ['N', 'Night vision'],
+        ['Z', { text: 'Unlock mouse', note: 'Frees the cursor without leaving the animal' }],
+        ['J', 'Duties'],
+        ['L', 'Player list'],
+        ['Backspace', 'Hide all UI'],
+      ],
+    },
+    {
+      kind: 'note',
+      body:
+        'Animals have no radio. Coordination between dinosaurs is roars, the pack system, and proximity chat.',
+    },
     { kind: 'heading', text: 'Contained animals' },
     {
       kind: 'text',
       body:
-        'A dinosaur inside its enclosure is a contained animal and cannot be killed. Staff can tranquillise it, move it, and work around it, but lethal damage is refused outright. This is what stops the park being cleared out by whoever is holding a rifle.',
+        'A dinosaur inside its enclosure is a contained animal and cannot be killed. Staff can tranquillise it, move it, and work around it, but lethal damage is refused outright by the game itself. This is what stops the park being cleared out by whoever is holding a rifle.',
     },
     { kind: 'heading', text: 'Going rogue' },
     {

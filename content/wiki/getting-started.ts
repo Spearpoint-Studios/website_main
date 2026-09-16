@@ -31,7 +31,7 @@ export const page: WikiPage = {
     {
       kind: 'text',
       body:
-        'Three teams are open from the start: Park Operations, Facilities, and Visitor. The rest unlock with global experience, from Field Rangers at 2,500 up to GenCore at 40,000.',
+        'Two teams are open from the start: Visitor and Park Operations. Field Rangers costs 2,500 global XP, and every team past that is earned by working the team below it rather than by a general total.',
     },
     {
       kind: 'text',
@@ -48,10 +48,11 @@ export const page: WikiPage = {
     {
       kind: 'list',
       items: [
-        'Teams — what each job actually does, and what it costs to unlock.',
+        'Teams — what each job does, and the chain of prerequisites to reach it.',
         'Experience and progression — how the two XP totals work and how fast they move.',
-        'Combat rules — who is allowed to attack whom, and why a shot sometimes does nothing.',
-        'Playing as a dinosaur — access rules, containment, and going rogue.',
+        'Playing as a dinosaur — access rules, keybinds, containment, and going rogue.',
+        'Controls and keybinds — every key, on foot, as an animal, and driving.',
+        'Weapons and equipment — what is in the locker and what it does.',
       ],
     },
   ],

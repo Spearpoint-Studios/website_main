@@ -37,18 +37,6 @@ export const page: WikiPage = {
         ['Operations Manager', '24,000'],
       ],
     },
-    { kind: 'heading', text: 'Facilities' },
-    {
-      kind: 'table',
-      columns: ['Rank', 'Team XP'],
-      rows: [
-        ['Janitor', 'Starting rank'],
-        ['Technician', '1,500'],
-        ['Senior Technician', '5,000'],
-        ['Maintenance Lead', '12,000'],
-        ['Facilities Director', '24,000'],
-      ],
-    },
     { kind: 'heading', text: 'Field Rangers' },
     {
       kind: 'table',

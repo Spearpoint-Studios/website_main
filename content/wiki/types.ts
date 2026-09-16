@@ -22,7 +22,9 @@ export const WIKI_CATEGORIES = [
   'Teams',
   'Progression',
   'Dinosaurs',
-  'Rules',
+  'Equipment',
+  'Systems',
+  'Reference',
 ] as const
 
 export type WikiCategory = (typeof WIKI_CATEGORIES)[number]

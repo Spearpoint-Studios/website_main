@@ -167,17 +167,31 @@ describe('wikiSearchIndex', () => {
   it('finds the pages a player would actually search for', () => {
     const index = wikiSearchIndex()
     const expectations: [query: string, slug: string][] = [
-      ['tranquilliser', 'combat-rules'],
-      ['unarmed guest', 'combat-rules'],
+      ['m4a1', 'weapons'],
+      ['shotgun', 'weapons'],
+      ['handcuffs', 'equipment'],
       ['gencore', 'teams'],
       ['ranger director', 'ranks'],
-      ['daily quests', 'progression'],
+      ['sniff', 'controls'],
+      ['pack invite', 'packs'],
+      ['rogue', 'breaches'],
+      ['defibrillator', 'medical'],
+      ['handbrake', 'vehicles'],
+      ['daily', 'quests'],
       ['game pass', 'dinosaurs'],
       ['new player', 'getting-started'],
+      ['stud', 'glossary'],
     ]
     for (const [query, slug] of expectations) {
       const hits = searchWiki(index, query)
       expect(hits.map((hit) => hit.doc.slug), query).toContain(slug)
+    }
+  })
+
+  it('no longer mentions Facilities, which was removed from the game', () => {
+    // A stale mention would send someone looking for a team that is not there.
+    for (const doc of wikiSearchIndex()) {
+      expect(`${doc.title} ${doc.summary} ${doc.text}`, doc.slug).not.toMatch(/Facilities/i)
     }
   })
 

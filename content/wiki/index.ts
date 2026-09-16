@@ -1,14 +1,37 @@
 import type { WikiSearchDoc } from '@/lib/wiki-search'
 import { WIKI_CATEGORIES, pageText, type WikiCategory, type WikiPage } from './types'
 
-import { page as combatRules } from './combat-rules'
+import { page as breaches } from './breaches'
+import { page as controls } from './controls'
 import { page as dinosaurs } from './dinosaurs'
+import { page as equipment } from './equipment'
 import { page as gettingStarted } from './getting-started'
+import { page as glossary } from './glossary'
+import { page as medical } from './medical'
+import { page as packs } from './packs'
 import { page as progression } from './progression'
+import { page as quests } from './quests'
 import { page as ranks } from './ranks'
 import { page as teams } from './teams'
+import { page as vehicles } from './vehicles'
+import { page as weapons } from './weapons'
 
-const registry: WikiPage[] = [combatRules, dinosaurs, gettingStarted, progression, ranks, teams]
+const registry: WikiPage[] = [
+  breaches,
+  controls,
+  dinosaurs,
+  equipment,
+  gettingStarted,
+  glossary,
+  medical,
+  packs,
+  progression,
+  quests,
+  ranks,
+  teams,
+  vehicles,
+  weapons,
+]
 
 /** Within a category: by `order`, then title. Pages without an order sort last. */
 function byOrderThenTitle(a: WikiPage, b: WikiPage): number {

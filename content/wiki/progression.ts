@@ -15,7 +15,7 @@ export const page: WikiPage = {
     {
       kind: 'text',
       body:
-        'There are two experience totals and they do different jobs. Global XP is the account total, and it is what unlocks teams. Team XP is tracked separately for each team, and it is what promotes you up that team’s rank ladder.',
+        'There are two experience totals and they do different jobs. Global XP is the account total. Team XP is tracked separately for each team, and it both promotes you up that team’s rank ladder and unlocks the teams that sit beyond it.',
     },
     { kind: 'heading', text: 'Earning it by playing' },
     {
@@ -29,7 +29,6 @@ export const page: WikiPage = {
       rows: [
         ['Visitor', '25', '—'],
         ['Park Operations', '50', '50'],
-        ['Facilities', '50', '50'],
         ['Field Rangers', '55', '55'],
         ['Behaviour Unit', '55', '55'],
         ['Containment Division', '60', '60'],
@@ -40,7 +39,7 @@ export const page: WikiPage = {
     {
       kind: 'text',
       body:
-        'Visitors are the outlier: half the global rate of most staff and no team experience at all, because there is no Visitor ladder to climb. The spread between staff teams is deliberately narrow. Sixty against fifty is a nudge towards the harder jobs, not a reason to abandon a team you enjoy.',
+        'Visitors are the outlier: half the global rate of most staff and no team experience at all, because there is no Visitor ladder to climb and nothing unlocks from it. The spread between staff teams is deliberately narrow. Sixty against fifty is a nudge towards the harder jobs, not a reason to abandon a team you enjoy.',
     },
     { kind: 'heading', text: 'Quests' },
     {
@@ -62,11 +61,43 @@ export const page: WikiPage = {
       body:
         'A demanding quest is worth roughly two hours of passive play, so the daily three are worth doing before anything else.',
     },
-    { kind: 'heading', text: 'How long unlocks actually take' },
+    { kind: 'heading', text: 'What each total unlocks' },
+    {
+      kind: 'note',
+      body:
+        'The prerequisites below are the new system and are not live yet. The game currently unlocks every team on global XP alone.',
+    },
     {
       kind: 'text',
       body:
-        'At 50 global XP every five minutes, ignoring quests, that is 600 an hour. Field Rangers at 2,500 is a little over four hours. Containment Division at 15,000 is about twenty-five. GenCore at 40,000 is the long haul. Doing the daily quests cuts all of those substantially.',
+        'Global XP buys exactly one thing: Field Rangers, at 2,500. Every team past that is bought with team XP on a specific other team, so the two totals do different jobs and you need both.',
+    },
+    {
+      kind: 'table',
+      columns: ['Team', 'Requires'],
+      rows: [
+        ['Field Rangers', '2,500 global XP'],
+        ['Behaviour Unit', '2,000 team XP on Field Rangers'],
+        ['Containment Division', '5,000 team XP on Field Rangers'],
+        ['Helix Genetics', '3,000 team XP on Behaviour Unit'],
+        ['GenCore', '8,000 on Field Rangers and 8,000 on Helix Genetics'],
+      ],
+    },
+    { kind: 'heading', text: 'How long that actually takes' },
+    {
+      kind: 'text',
+      body:
+        'At 55 team XP every five minutes, a Field Ranger earns 660 an hour. Behaviour Unit at 2,000 is about three hours of ranger work, and Containment Division at 5,000 is around seven and a half. Doing the daily quests cuts all of those substantially, because a quest pays team XP directly.',
+    },
+    {
+      kind: 'text',
+      body:
+        'GenCore is the long route by design. Eight thousand on Field Rangers is roughly twelve hours, and the eight thousand on Helix Genetics cannot start until Behaviour Unit and then Helix itself are unlocked.',
+    },
+    {
+      kind: 'note',
+      body:
+        'Team XP keeps accruing on a team after it has bought you something. Hitting 5,000 on Field Rangers for Containment Division does not spend it, so the same experience still counts towards the 8,000 GenCore wants.',
     },
     { kind: 'heading', text: 'Saving' },
     {

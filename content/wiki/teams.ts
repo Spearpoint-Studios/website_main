@@ -1,8 +1,10 @@
 import type { WikiPage } from './types'
 
 /**
- * Unlock thresholds and headcount limits mirror ProgressionConfig in the game
- * repo (TeamUnlockXP and TeamLimits). If those change, change them here.
+ * The prerequisite chain below is the incoming unlock system, agreed with the
+ * studio. The live game still unlocks teams on global XP alone and still has a
+ * Facilities team; the note in the page says so. When the game changes, delete
+ * that note and the one on the progression page.
  */
 export const page: WikiPage = {
   meta: {
@@ -10,78 +12,79 @@ export const page: WikiPage = {
     title: 'Teams',
     category: 'Teams',
     summary:
-      'The eight teams, what each does, the experience needed to unlock them, and how many people each can hold.',
-    keywords: ['jobs', 'roles', 'departments', 'factions', 'unlock', 'slots'],
+      'The seven teams, what each does, and the experience on other teams you need before you can join them.',
+    keywords: ['jobs', 'roles', 'departments', 'factions', 'unlock', 'slots', 'prerequisite'],
     order: 0,
   },
   blocks: [
     {
       kind: 'text',
       body:
-        'There are eight teams. Three are open immediately and the rest unlock with global experience. Each has a headcount limit, so a full team means waiting for someone to leave.',
+        'There are seven teams. Two are open to anyone. The rest are earned, and most are earned by working a specific team first rather than by accumulating a general total.',
+    },
+    {
+      kind: 'note',
+      body:
+        'The prerequisites below are the new system and are not live yet. The game currently unlocks every team on global XP alone. This page will stop carrying this note when that changes.',
+    },
+    { kind: 'heading', text: 'What each team does' },
+    {
+      kind: 'table',
+      columns: ['Team', 'Role', 'Slots'],
+      rows: [
+        ['Visitor', 'The default. No duties, no equipment, and the slowest experience gain.', 'Unlimited'],
+        ['Park Operations', 'Runs the public side of the park: gates, rides, tours, and guests.', '8'],
+        ['Field Rangers', 'Patrols the grounds and is first to respond when something gets out.', '10'],
+        ['Behaviour Unit', 'Works with the animals directly: handling, observation, and enrichment.', '12'],
+        ['Containment Division', 'The armed response. Recaptures escaped animals and handles serious incidents.', '10'],
+        ['Helix Genetics', 'The laboratory. Research, breeding, and whatever is being grown this week.', '6'],
+        ['GenCore', 'The parent company. Oversight, contracts, and interests of their own.', '6'],
+      ],
+    },
+    { kind: 'heading', text: 'How teams unlock' },
+    {
+      kind: 'text',
+      body:
+        'Field Rangers is the one team bought with global XP. Everything past it is bought with team XP earned on a specific other team, so reaching the specialist roles means actually having done the job that feeds into them.',
     },
     {
       kind: 'table',
-      columns: ['Team', 'Unlocks at', 'Slots'],
+      columns: ['Team', 'Requires'],
       rows: [
+        ['Visitor', 'Nothing'],
+        ['Park Operations', 'Nothing'],
+        ['Field Rangers', '2,500 global XP'],
+        ['Behaviour Unit', '2,000 team XP on Field Rangers'],
+        ['Containment Division', '5,000 team XP on Field Rangers'],
+        ['Helix Genetics', '3,000 team XP on Behaviour Unit'],
         [
-          { text: 'Visitor', note: 'The default. No duties, no equipment, and the slowest experience gain.' },
-          'Open',
-          'Unlimited',
-        ],
-        [
-          { text: 'Park Operations', note: 'Runs the public side of the park: gates, rides, tours, and guests.' },
-          'Open',
-          '8',
-        ],
-        [
-          { text: 'Facilities', note: 'Keeps the place working. Power, repairs, cleaning, and the things that break.' },
-          'Open',
-          '6',
-        ],
-        [
-          { text: 'Field Rangers', note: 'Patrols the grounds and is first to respond when something gets out.' },
-          '2,500 XP',
-          '10',
-        ],
-        [
-          { text: 'Behaviour Unit', note: 'Works with the animals directly: handling, observation, and enrichment.' },
-          '5,000 XP',
-          '12',
-        ],
-        [
-          { text: 'Containment Division', note: 'The armed response. Recaptures escaped animals and handles serious incidents.' },
-          '15,000 XP',
-          '10',
-        ],
-        [
-          { text: 'Helix Genetics', note: 'The laboratory. Research, breeding, and whatever is being grown this week.' },
-          '25,000 XP',
-          '6',
-        ],
-        [
-          { text: 'GenCore', note: 'The parent company. Oversight, contracts, and interests of their own.' },
-          '40,000 XP',
-          '6',
+          'GenCore',
+          { text: '8,000 team XP on Field Rangers and 8,000 on Helix Genetics', note: 'Both, not either' },
         ],
       ],
+    },
+    { kind: 'heading', text: 'Why it works this way' },
+    {
+      kind: 'text',
+      body:
+        'Under a global total, someone could stand around as a Visitor for long enough and walk straight into the armed response team having never patrolled anything. Tying each unlock to the team below it means the person recapturing an animal has already spent time being the person who reports one loose.',
+    },
+    {
+      kind: 'text',
+      body:
+        'GenCore needs both halves because it oversees both halves. Eight thousand on Field Rangers is the field side, eight thousand on Helix Genetics is the laboratory side, and the two together are roughly the longest route in the game.',
     },
     { kind: 'heading', text: 'Headcount limits' },
     {
       kind: 'text',
       body:
-        'The limits keep the park balanced rather than gate content. Ten armed operatives and one attendant is not a park, so the teams that most change how a round plays are held smallest relative to demand.',
+        'Every staff team has a slot limit, so a full team means waiting for someone to leave. The limits keep the park balanced rather than gate content: ten armed operatives and one attendant is not a park. Behaviour Unit has the most at twelve, because handling animals is the job that most needs more than one person on it.',
     },
-    {
-      kind: 'note',
-      body:
-        'Behaviour Unit has the largest limit at twelve, because handling animals is the job that most needs more than one person on it.',
-    },
-    { kind: 'heading', text: 'Protected teams' },
+    { kind: 'heading', text: 'Radio access' },
     {
       kind: 'text',
       body:
-        'Field Rangers, Containment Division, Helix Genetics, and Park Operations count as protected personnel. Two members of those teams cannot attack each other, even across team lines. The combat rules page covers exactly how that is enforced.',
+        'Park Operations, Field Rangers, Containment Division and Helix Genetics have radios. Visitors, Behaviour Unit and GenCore do not, so coordination on those teams happens in proximity chat.',
     },
   ],
 }
