@@ -7,15 +7,15 @@ export const page: WikiPage = {
     title: 'Experience and progression',
     category: 'Progression',
     summary:
-      'How global and team experience are earned, how fast each team earns them, and what quests are worth.',
-    keywords: ['xp', 'levelling', 'leveling', 'grind', 'credits', 'rewards', 'daily'],
+      'Global XP is a rewards track and unlocks nothing. Team XP does all the gating. How both are earned, and how fast.',
+    keywords: ['xp', 'levelling', 'leveling', 'grind', 'credits', 'rewards', 'daily', 'unlock', 'prerequisite'],
     order: 0,
   },
   blocks: [
     {
       kind: 'text',
       body:
-        'There are two experience totals and they do different jobs. Global XP is the account total. Team XP is tracked separately for each team, and it both promotes you up that team’s rank ladder and unlocks the teams that sit beyond it.',
+        'There are two experience totals and they do completely different jobs. Global XP is the account-wide total and it is a rewards track: it unlocks nothing. Team XP is tracked separately for each team, and it does all the gating — it promotes you up that team’s rank ladder and unlocks the teams beyond it.',
     },
     { kind: 'heading', text: 'Earning it by playing' },
     {
@@ -61,22 +61,35 @@ export const page: WikiPage = {
       body:
         'A demanding quest is worth roughly two hours of passive play, so the daily three are worth doing before anything else.',
     },
-    { kind: 'heading', text: 'What each total unlocks' },
+    { kind: 'heading', text: 'What global XP is for' },
     {
-      kind: 'note',
+      kind: 'text',
       body:
-        'The prerequisites below are the new system and are not live yet. The game currently unlocks every team on global XP alone.',
+        'Global XP is the account total and it is purely a rewards track. It does not unlock teams, it does not affect your rank, and no job is closed to you because it is low. It is the measure of what you have done across the whole park rather than a key to anything.',
     },
     {
       kind: 'text',
       body:
-        'Global XP buys exactly one thing: Field Rangers, at 2,500. Every team past that is bought with team XP on a specific other team, so the two totals do different jobs and you need both.',
+        'That means a long-standing Visitor and a long-standing Ranger can hold similar global totals while having very different access. Access is the other total’s job.',
+    },
+    { kind: 'heading', text: 'What team XP unlocks' },
+    {
+      kind: 'note',
+      body:
+        'The prerequisites below are the new system and are not live yet. The game currently unlocks teams on global XP.',
+    },
+    {
+      kind: 'text',
+      body:
+        'Three teams need nothing at all. Every other team is bought with team XP on a specific other team, which is the only gate in the game.',
     },
     {
       kind: 'table',
       columns: ['Team', 'Requires'],
       rows: [
-        ['Field Rangers', '2,500 global XP'],
+        ['Visitor', 'Nothing'],
+        ['Park Operations', 'Nothing'],
+        ['Field Rangers', 'Nothing'],
         ['Behaviour Unit', '2,000 team XP on Field Rangers'],
         ['Containment Division', '5,000 team XP on Field Rangers'],
         ['Helix Genetics', '3,000 team XP on Behaviour Unit'],
@@ -93,6 +106,11 @@ export const page: WikiPage = {
       kind: 'text',
       body:
         'GenCore is the long route by design. Eight thousand on Field Rangers is roughly twelve hours, and the eight thousand on Helix Genetics cannot start until Behaviour Unit and then Helix itself are unlocked.',
+    },
+    {
+      kind: 'text',
+      body:
+        'None of that waiting happens at the start, though. Field Rangers is open immediately, so the clock on every specialist team begins on your first join rather than after a qualifying period as a Visitor.',
     },
     {
       kind: 'note',

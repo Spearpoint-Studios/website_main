@@ -25,18 +25,18 @@ export const page: WikiPage = {
     {
       kind: 'text',
       body:
-        'Visitors earn experience more slowly than staff, and only towards the global total rather than a team. That is deliberate. It is the tourist role, not a grind.',
+        'Visitors earn experience more slowly than staff, and only towards the global total rather than a team. That is deliberate. It is the tourist role, not a grind — and since global XP unlocks nothing, staying a Visitor does not move you towards a job.',
     },
     { kind: 'heading', text: 'Picking a team' },
     {
       kind: 'text',
       body:
-        'Two teams are open from the start: Visitor and Park Operations. Field Rangers costs 2,500 global XP, and every team past that is earned by working the team below it rather than by a general total.',
+        'Three teams are open from your first join: Visitor, Park Operations, and Field Rangers. The four specialist teams are earned by working the team that feeds them, not by building up a general total.',
     },
     {
       kind: 'text',
       body:
-        'Every team has its own rank ladder, climbed with experience earned on that team, so switching jobs never costs you the rank you already hold elsewhere.',
+        'Every team has its own rank ladder, climbed with experience earned on that team, so switching jobs never costs you the rank you already hold elsewhere. If you want a specialist team, Field Rangers is where to start: three of the four are reached through it.',
     },
     { kind: 'heading', text: 'Playing as a dinosaur' },
     {

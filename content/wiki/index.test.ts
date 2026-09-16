@@ -188,6 +188,16 @@ describe('wikiSearchIndex', () => {
     }
   })
 
+  it('never says global XP unlocks a team, since it is a rewards track only', () => {
+    // The wiki said this until the unlock rework, and a leftover sentence would
+    // send someone grinding as a Visitor for access that grinding cannot buy.
+    for (const doc of wikiSearchIndex()) {
+      const text = `${doc.summary} ${doc.text}`
+      expect(text, doc.slug).not.toMatch(/global XP\b[^.]*\bunlocks? (a |the )?(team|Field Rangers)/i)
+      expect(text, doc.slug).not.toMatch(/Field Rangers[^.]*\b\d[\d,]* global XP/i)
+    }
+  })
+
   it('no longer mentions Facilities, which was removed from the game', () => {
     // A stale mention would send someone looking for a team that is not there.
     for (const doc of wikiSearchIndex()) {
