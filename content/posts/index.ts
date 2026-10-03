@@ -1,8 +1,9 @@
 import type { PostModule } from './types'
 
 import * as developmentUpdate from './2026-09-06-development-update'
+import * as releaseDate from './2026-10-03-release-date'
 
-const registry: PostModule[] = [developmentUpdate]
+const registry: PostModule[] = [developmentUpdate, releaseDate]
 
 export function allPosts(): PostModule[] {
   return [...registry].sort((a, b) => {
