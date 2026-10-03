@@ -55,6 +55,16 @@ export default async function PostPage({ params }: PostPageProps) {
             <time className="post-date" dateTime={meta.date}>
               {formatPostDate(meta.date)}
             </time>
+            {meta.countdown ? (
+              <p className="post-timer-link">
+                <Link className="button-link" href={`/blog/${meta.slug}/timer`}>
+                  Open the countdown
+                  <span aria-hidden="true" className="button-link-chevron">
+                    &rsaquo;
+                  </span>
+                </Link>
+              </p>
+            ) : null}
           </header>
 
           {meta.cover ? (

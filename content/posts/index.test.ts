@@ -61,6 +61,15 @@ describe('posts registry', () => {
     }
   })
 
+  it('gives every countdown a timestamp with an explicit offset, so it is the same instant everywhere', () => {
+    for (const { meta } of allPosts()) {
+      if (!meta.countdown) continue
+      expect(meta.countdown.at).toMatch(/(?:Z|[+-]\d{2}:\d{2})$/)
+      expect(Number.isNaN(Date.parse(meta.countdown.at))).toBe(false)
+      expect(meta.countdown.label.trim()).not.toBe('')
+    }
+  })
+
   it('points every cover at a file that exists under public, with alt text', () => {
     for (const { meta } of allPosts()) {
       if (!meta.cover) continue

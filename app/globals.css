@@ -637,6 +637,59 @@ a.card:hover,
 
 .post-cover { margin: 0 0 3rem; }
 
+.post-timer-link { margin: 0.75rem 0 0; }
+
+/* countdown: the /blog/<slug>/timer page. Big tabular digits so the numbers
+   do not jitter in width as they tick. */
+.countdown { text-align: center; }
+
+.countdown-label {
+  margin: 0 0 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--l-muted);
+}
+
+.countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+
+.countdown-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 0.5rem;
+  background: var(--l-alt);
+  border: 1px solid var(--l-line);
+  border-radius: var(--radius-sm);
+}
+
+.countdown-value {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-unit {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--l-muted);
+}
+
+.countdown-local { margin: 1.25rem 0 0; font-size: 0.9375rem; color: var(--l-muted); }
+
+.countdown-live {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--l-accent);
+}
+
 .prose { font-size: 1.0625rem; }
 .prose > *:first-child { margin-top: 0; }
 .prose > *:last-child { margin-bottom: 0; }

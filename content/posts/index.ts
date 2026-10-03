@@ -20,4 +20,4 @@ export function postBySlug(slug: string): PostModule | undefined {
   return allPosts().find((post) => post.meta.slug === slug)
 }
 
-export type { PostMeta, PostModule, PostTag, PostCover } from './types'
+export type { PostMeta, PostModule, PostTag, PostCover, PostCountdown } from './types'

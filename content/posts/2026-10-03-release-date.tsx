@@ -13,6 +13,12 @@ export const meta = {
     src: '/media/posts/release-date.webp',
     alt: 'A mosasaur breaching out of the lagoon in front of the stadium stands, framed like a camera viewfinder.',
   },
+  countdown: {
+    // 22:00 on Central European clocks, which are on summer time (UTC+2)
+    // until 25 October.
+    at: '2026-10-09T22:00:00+02:00',
+    label: 'Dinosaur Roleplay goes live in',
+  },
 } satisfies PostMeta
 
 export default function Body() {
