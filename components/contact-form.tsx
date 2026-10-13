@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { site } from '@/content/site'
 import { roleBySlug } from '@/content/roles'
+import { ANSWER_MAX_LENGTH } from '@/lib/contact-schema'
 import { ScrollReveal } from '@/components/scroll-reveal'
 
 type Status = 'idle' | 'sending' | 'sent'
@@ -12,6 +13,8 @@ function ContactFormInner() {
   const params = useSearchParams()
   const roleSlug = params.get('role') ?? ''
   const role = roleSlug ? roleBySlug(roleSlug) : undefined
+  const questions = role?.questions ?? []
+  const applying = questions.length > 0
 
   const renderedAt = useRef(0)
   const [status, setStatus] = useState<Status>('idle')
@@ -21,6 +24,7 @@ function ContactFormInner() {
   const [email, setEmail] = useState('')
   const [subjectEdit, setSubjectEdit] = useState<string | null>(null)
   const [message, setMessage] = useState('')
+  const [answers, setAnswers] = useState<string[]>([])
   const [website, setWebsite] = useState('')
 
   const defaultSubject = role ? `Application: ${role.title}` : ''
@@ -38,8 +42,10 @@ function ContactFormInner() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          name, email, subject, message, website, renderedAt: renderedAt.current,
+          name, email, subject, website, renderedAt: renderedAt.current,
+          message: applying ? '' : message,
           ...(role ? { role: role.slug } : {}),
+          ...(applying ? { answers: questions.map((_, i) => answers[i] ?? '') } : {}),
         }),
       })
       const body = await response.json()
@@ -56,8 +62,21 @@ function ContactFormInner() {
     }
   }
 
+  function setAnswer(index: number, value: string) {
+    setAnswers((current) => {
+      const next = [...current]
+      next[index] = value
+      return next
+    })
+  }
+
   if (status === 'sent') {
-    return (
+    return applying ? (
+      <div className="sent">
+        <h3>Application sent</h3>
+        <p>Thanks for applying. We read every application and will reply by email.</p>
+      </div>
+    ) : (
       <div className="sent">
         <h3>Message sent</h3>
         <p>Thanks for getting in touch. We read everything and will reply by email.</p>
@@ -85,10 +104,25 @@ function ContactFormInner() {
         <input id="c-subject" value={subject} onChange={(e) => setSubjectEdit(e.target.value)} />
       </div>
 
-      <div className="field">
-        <label htmlFor="c-message">Message</label>
-        <textarea id="c-message" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
-      </div>
+      {applying ? (
+        questions.map((question, i) => (
+          <div className="field" key={question}>
+            <label htmlFor={`c-answer-${i}`}>{question}</label>
+            <textarea
+              id={`c-answer-${i}`}
+              rows={3}
+              maxLength={ANSWER_MAX_LENGTH}
+              value={answers[i] ?? ''}
+              onChange={(e) => setAnswer(i, e.target.value)}
+            />
+          </div>
+        ))
+      ) : (
+        <div className="field">
+          <label htmlFor="c-message">Message</label>
+          <textarea id="c-message" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
+        </div>
+      )}
 
       {/* Honeypot. Hidden from people, irresistible to bots. */}
       <div className="honeypot" aria-hidden="true">
@@ -97,7 +131,7 @@ function ContactFormInner() {
       </div>
 
       <button className="button" type="submit" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Sending' : 'Send message'}
+        {status === 'sending' ? 'Sending' : applying ? 'Send application' : 'Send message'}
       </button>
     </form>
   )
