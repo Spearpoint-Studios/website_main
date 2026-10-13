@@ -28,6 +28,25 @@ export const roles: Role[] = [
     ],
     open: true,
   },
+  {
+    slug: 'community-manager',
+    title: 'Community Manager',
+    location: 'Remote, volunteer',
+    summary: 'Be the link between the people who play our games and the people who make them.',
+    description: [
+      'You will run announcements and events, collect feedback and bug reports for the team, and lead the moderators day to day.',
+      'We are looking for someone who has run or grown a community before and writes in a friendly, plain voice.',
+    ],
+    questions: [
+      'How old are you, and what timezone are you in?',
+      'What are your Discord and Roblox usernames?',
+      'What communities have you run or helped grow? Links or numbers help.',
+      'Write a short announcement for a new game update, two or three sentences.',
+      'Players are angry about a change the team made. What do you post?',
+      'What would you change about our Discord today?',
+    ],
+    open: true,
+  },
 ]
 
 export function openRoles(): Role[] {
