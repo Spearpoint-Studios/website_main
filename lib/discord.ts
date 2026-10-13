@@ -1,6 +1,8 @@
 import type { ContactInput } from './contact-schema'
 
 const DESCRIPTION_LIMIT = 4096
+const FIELD_NAME_LIMIT = 256
+const FIELD_VALUE_LIMIT = 1024
 const ACCENT = 0x1f7fa8
 
 export function buildEmbed(input: ContactInput): Record<string, unknown> {
@@ -11,9 +13,16 @@ export function buildEmbed(input: ContactInput): Record<string, unknown> {
 
   if (input.role) fields.push({ name: 'Role', value: input.role, inline: true })
 
+  for (const { question, answer } of input.answers ?? []) {
+    fields.push({
+      name: question.slice(0, FIELD_NAME_LIMIT),
+      value: answer.slice(0, FIELD_VALUE_LIMIT),
+    })
+  }
+
   return {
     title: input.subject,
-    description: input.message.slice(0, DESCRIPTION_LIMIT),
+    ...(input.message ? { description: input.message.slice(0, DESCRIPTION_LIMIT) } : {}),
     color: ACCENT,
     fields,
     timestamp: new Date().toISOString(),

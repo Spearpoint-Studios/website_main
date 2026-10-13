@@ -38,6 +38,36 @@ describe('buildEmbed', () => {
     const embed = buildEmbed({ ...input, message: 'x'.repeat(5000) })
     expect((embed.description as string).length).toBeLessThanOrEqual(4096)
   })
+
+  it('adds one field per answer, after the role, in question order', () => {
+    const fields = buildEmbed({
+      ...input,
+      role: 'moderator',
+      answers: [
+        { question: 'How old are you?', answer: '19' },
+        { question: 'Why this role?', answer: 'I like people.' },
+      ],
+    }).fields as Array<{ name: string; value: string; inline?: boolean }>
+    expect(fields.slice(3)).toEqual([
+      { name: 'How old are you?', value: '19' },
+      { name: 'Why this role?', value: 'I like people.' },
+    ])
+  })
+
+  it('caps answer fields at the Discord field limits', () => {
+    const fields = buildEmbed({
+      ...input,
+      answers: [{ question: 'q'.repeat(300), answer: 'a'.repeat(2000) }],
+    }).fields as Array<{ name: string; value: string }>
+    const answer = fields[fields.length - 1]
+    expect(answer.name.length).toBe(256)
+    expect(answer.value.length).toBe(1024)
+  })
+
+  it('omits the description when the message is empty', () => {
+    const embed = buildEmbed({ ...input, message: '' })
+    expect('description' in embed).toBe(false)
+  })
 })
 
 describe('sendToDiscord', () => {
