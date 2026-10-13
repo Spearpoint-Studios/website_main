@@ -4,11 +4,10 @@ export type Role = {
   location: string
   summary: string
   description?: string[]
+  questions: string[]
   open: boolean
 }
 
-// No roles are open right now. Add entries here when a position opens; the
-// careers page and its empty state read directly from this array.
 export const roles: Role[] = []
 
 export function openRoles(): Role[] {
