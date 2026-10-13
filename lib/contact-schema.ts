@@ -1,9 +1,17 @@
+import { roleBySlug, type Role } from '@/content/roles'
+
+export type Answer = {
+  question: string
+  answer: string
+}
+
 export type ContactInput = {
   name: string
   email: string
   subject: string
   message: string
   role?: string
+  answers?: Answer[]
   website?: string
   renderedAt: number
 }
@@ -14,6 +22,7 @@ export type ValidationResult =
   | { ok: 'discard' }
 
 const MIN_FILL_MS = 3000
+export const ANSWER_MAX_LENGTH = 800
 
 function str(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
@@ -30,7 +39,11 @@ function looksLikeEmail(value: string): boolean {
   return domain.includes('.') && !domain.startsWith('.') && !domain.endsWith('.')
 }
 
-export function validateContact(body: unknown, now: number): ValidationResult {
+export function validateContact(
+  body: unknown,
+  now: number,
+  findRole: (slug: string) => Role | undefined = roleBySlug,
+): ValidationResult {
   if (typeof body !== 'object' || body === null) {
     return { ok: false, error: 'Invalid request body.' }
   }
@@ -60,16 +73,41 @@ export function validateContact(body: unknown, now: number): ValidationResult {
   const subject = str(raw.subject)
   if (!inRange(subject, 1, 120)) return { ok: false, error: 'Please add a subject.' }
 
-  const message = str(raw.message)
-  if (!inRange(message, 10, 4000)) {
-    return { ok: false, error: 'Please write a little more in your message.' }
-  }
-
   const role = str(raw.role)
   if (role.length > 64) return { ok: false, error: 'Invalid role.' }
 
-  return {
-    ok: true,
-    value: { name, email, subject, message, renderedAt, ...(role ? { role } : {}) },
+  const questions = (role && findRole(role)?.questions) || []
+  const message = str(raw.message)
+
+  if (questions.length === 0) {
+    if (!inRange(message, 10, 4000)) {
+      return { ok: false, error: 'Please write a little more in your message.' }
+    }
+    return {
+      ok: true,
+      value: { name, email, subject, message, renderedAt, ...(role ? { role } : {}) },
+    }
   }
+
+  if (message.length > 4000) return { ok: false, error: 'That message is too long.' }
+
+  const rawAnswers = Array.isArray(raw.answers) ? raw.answers : []
+  if (rawAnswers.length !== questions.length) {
+    return { ok: false, error: 'Please answer every question.' }
+  }
+
+  const answers: Answer[] = []
+  for (let i = 0; i < questions.length; i++) {
+    const answer = str(rawAnswers[i])
+    if (answer.length === 0) return { ok: false, error: 'Please answer every question.' }
+    if (answer.length > ANSWER_MAX_LENGTH) {
+      return {
+        ok: false,
+        error: `Please keep each answer under ${ANSWER_MAX_LENGTH} characters.`,
+      }
+    }
+    answers.push({ question: questions[i], answer })
+  }
+
+  return { ok: true, value: { name, email, subject, message, role, answers, renderedAt } }
 }
