@@ -712,6 +712,10 @@ a.card:hover,
 
 .prose ul, .prose ol { margin: 0 0 1.4rem; padding-left: 1.4rem; }
 .prose li { margin: 0 0 0.5rem; }
+.prose .list-columns { columns: 2; column-gap: 2rem; }
+.prose .list-columns li { break-inside: avoid; }
+
+@media (min-width: 40rem) { .prose .list-columns { columns: 3; } }
 .prose strong { font-weight: 700; }
 
 .prose a {
