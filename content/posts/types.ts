@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 
-export type PostTag = 'Devlog' | 'Update'
+export type PostTag = 'Devlog' | 'Update' | 'Release notes'
 
 export type PostCover = {
   src: string
