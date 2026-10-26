@@ -3,20 +3,48 @@ Our main website, all traffic that goes through spearpointstudio.com uses this s
 
 ## Stack
 
-Plain HTML and CSS. No build step, no dependencies.
+Next.js (App Router) with React and TypeScript. Styling is one plain stylesheet,
+`app/globals.css` — no CSS framework. Tests run on vitest.
 
-- `index.html` — the page
-- `styles.css` — all styling, with a light/dark palette driven by `prefers-color-scheme`
+There are no runtime dependencies beyond `next` and `react`. That is worth
+keeping: it is why the build is fast and why there is nothing to audit. Reach
+for a package only when hand-writing the thing would genuinely be worse.
 
 ## Running locally
 
-Open `index.html` directly in a browser, or serve the folder if you want a real
-`http://` origin:
-
 ```bash
-python -m http.server 4300
-# then open http://localhost:4300
+npm install
+npm run dev     # http://localhost:3000
+npm test        # vitest
+npm run lint
+npm run build   # what CI and the VPS run
 ```
+
+## Content
+
+Content is typed TypeScript modules under `content/`, registered by hand in an
+`index.ts`. There is no CMS and no markdown parser.
+
+| | |
+|---|---|
+| `content/posts/` | Blog posts. A `meta` export plus a React component for the body. |
+| `content/wiki/` | Game wiki. A `meta` export plus a list of content blocks. |
+
+The wiki is **data, not JSX**: a page is an array of blocks (`text`, `heading`,
+`list`, `table`, `note`), rendered by `components/wiki-blocks.tsx`. Writing a
+page needs no React, formatting stays consistent for free, and the search index
+is derived from the same blocks the page renders from — so a page can never be
+findable by a word it no longer contains.
+
+Search (`lib/wiki-search.ts`) is hand-rolled and has no dependencies. The whole
+corpus is a few dozen short pages, so it is built at build time, shipped with
+the page as data, and scored in the browser on each keystroke. Every word typed
+has to appear on a page, so a longer query narrows rather than widens.
+
+To add a wiki page: write `content/wiki/<slug>.ts`, add it to the registry in
+`content/wiki/index.ts`, and run `npm test`. The registry tests check slugs,
+categories, empty blocks, and that every table row has as many cells as the
+table has columns.
 
 ## Deployment
 

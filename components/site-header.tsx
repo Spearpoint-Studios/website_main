@@ -75,6 +75,9 @@ export function SiteHeader() {
           <Link href="/blog" className={pathname.startsWith('/blog') ? 'is-active' : undefined}>
             Blog
           </Link>
+          <Link href="/wiki" className={pathname.startsWith('/wiki') ? 'is-active' : undefined}>
+            Wiki
+          </Link>
           <Link href="/careers" className={pathname === '/careers' ? 'is-active' : undefined}>
             Careers
           </Link>
