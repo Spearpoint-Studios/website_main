@@ -26,7 +26,7 @@ export const roles: Role[] = [
       'Two players are arguing in chat and it is getting personal. What do you do?',
       'A friend of yours breaks a rule. How do you handle it?',
     ],
-    open: true,
+    open: false,
   },
   {
     slug: 'community-manager',
@@ -45,7 +45,7 @@ export const roles: Role[] = [
       'Players are angry about a change the team made. What do you post?',
       'What would you change about our Discord today?',
     ],
-    open: true,
+    open: false,
   },
 ]
 
