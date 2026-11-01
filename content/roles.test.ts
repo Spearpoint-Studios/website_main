@@ -1,14 +1,72 @@
 import { describe, it, expect } from 'vitest'
-import { roles, openRoles, roleBySlug } from './roles'
+import { roles, openRoles, roleBySlug, openRoleBySlug, isOpen, type Role } from './roles'
 import { ANSWER_MAX_LENGTH } from '@/lib/contact-schema'
 
 const EMBED_TOTAL_LIMIT = 6000
 const FIELD_NAME_LIMIT = 256
 const WORST_CASE_HEADER = 120 + 'Name'.length + 80 + 'Email'.length + 160 + 'Role'.length + 64
 
+describe('isOpen', () => {
+  const role: Role = {
+    slug: 'tester',
+    title: 'Tester',
+    location: 'Remote',
+    summary: 'Tests things.',
+    questions: ['Why?'],
+    open: true,
+  }
+  const closesAt = '2030-01-08T23:59:59+01:00'
+  const closing = Date.parse(closesAt)
+
+  it('keeps a role with no closing date open', () => {
+    expect(isOpen(role, closing)).toBe(true)
+  })
+
+  it('keeps a role open until its closing instant', () => {
+    expect(isOpen({ ...role, closesAt }, closing - 1)).toBe(true)
+  })
+
+  it('closes a role at its closing instant and after', () => {
+    expect(isOpen({ ...role, closesAt }, closing)).toBe(false)
+    expect(isOpen({ ...role, closesAt }, closing + 86_400_000)).toBe(false)
+  })
+
+  it('reads the offset, not the server clock zone', () => {
+    // 23:59:59 at +01:00 is 22:59:59 UTC.
+    expect(isOpen({ ...role, closesAt }, Date.parse('2030-01-08T22:59:58Z'))).toBe(true)
+    expect(isOpen({ ...role, closesAt }, Date.parse('2030-01-08T23:00:00Z'))).toBe(false)
+  })
+
+  it('treats a role switched off by hand as closed, whatever its date', () => {
+    expect(isOpen({ ...role, open: false, closesAt }, closing - 1)).toBe(false)
+  })
+
+  it('treats an unreadable closing date as closed', () => {
+    expect(isOpen({ ...role, closesAt: 'next week' }, 0)).toBe(false)
+  })
+})
+
 describe('roles', () => {
   it('lists every open role and nothing else', () => {
-    expect(openRoles()).toEqual(roles.filter((role) => role.open))
+    const now = Date.now()
+    expect(openRoles(now)).toEqual(roles.filter((role) => isOpen(role, now)))
+  })
+
+  it('finds an open role by slug only while it is open', () => {
+    for (const role of roles) {
+      if (!role.closesAt) continue
+      const closing = Date.parse(role.closesAt)
+      expect(openRoleBySlug(role.slug, closing - 1)).toBe(role.open ? role : undefined)
+      expect(openRoleBySlug(role.slug, closing)).toBeUndefined()
+    }
+  })
+
+  it('gives every closing date an explicit offset and a real instant', () => {
+    for (const role of roles) {
+      if (role.closesAt === undefined) continue
+      expect(role.closesAt, role.slug).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/)
+      expect(Number.isNaN(Date.parse(role.closesAt)), role.slug).toBe(false)
+    }
   })
 
   it('finds a role by its slug', () => {
@@ -32,7 +90,9 @@ describe('roles', () => {
   })
 
   it('gives every open role at least one question, all unique', () => {
-    for (const role of openRoles()) {
+    // Every role switched on, whether or not its date has passed, so this
+    // check does not quietly stop covering a role once it expires.
+    for (const role of roles.filter((r) => r.open)) {
       expect(role.questions.length).toBeGreaterThan(0)
       expect(new Set(role.questions).size).toBe(role.questions.length)
     }

@@ -1,4 +1,4 @@
-import { roleBySlug, type Role } from '@/content/roles'
+import { isOpen, roleBySlug, type Role } from '@/content/roles'
 
 export type Answer = {
   question: string
@@ -76,7 +76,14 @@ export function validateContact(
   const role = str(raw.role)
   if (role.length > 64) return { ok: false, error: 'Invalid role.' }
 
-  const questions = (role && findRole(role)?.questions) || []
+  // A role that has closed, by hand or by date, takes no more applications,
+  // even from a form that was opened while it was still listed.
+  const found = role ? findRole(role) : undefined
+  if (found && !isOpen(found, now)) {
+    return { ok: false, error: 'Applications for this role have closed.' }
+  }
+
+  const questions = found?.questions ?? []
   const message = str(raw.message)
 
   if (questions.length === 0) {

@@ -174,3 +174,40 @@ describe('validateContact for a role with questions', () => {
     expect(result).toEqual({ ok: 'discard' })
   })
 })
+
+describe('validateContact for a role that has closed', () => {
+  const role: Role = {
+    slug: 'tester',
+    title: 'Tester',
+    location: 'Remote',
+    summary: 'Tests things.',
+    questions: ['How old are you?', 'Why this role?'],
+    open: true,
+    closesAt: new Date(NOW + 60_000).toISOString(),
+  }
+  const application = {
+    ...base,
+    message: '',
+    role: 'tester',
+    answers: ['19, CET', 'I like breaking things.'],
+  }
+  const closed = { ok: false, error: 'Applications for this role have closed.' }
+
+  it('accepts an application before the closing instant', () => {
+    const findRole = (slug: string) => (slug === role.slug ? role : undefined)
+    expect(validateContact(application, NOW, findRole).ok).toBe(true)
+  })
+
+  it('refuses an application at or after the closing instant', () => {
+    const findRole = (slug: string) => (slug === role.slug ? role : undefined)
+    const later = { ...application, renderedAt: NOW + 50_000 }
+    expect(validateContact(later, NOW + 60_000, findRole)).toEqual(closed)
+    expect(validateContact(later, NOW + 120_000, findRole)).toEqual(closed)
+  })
+
+  it('refuses an application to a role switched off by hand', () => {
+    const off = { ...role, open: false, closesAt: undefined }
+    const findRole = (slug: string) => (slug === off.slug ? off : undefined)
+    expect(validateContact(application, NOW, findRole)).toEqual(closed)
+  })
+})

@@ -1,9 +1,9 @@
 'use client'
 
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { site } from '@/content/site'
-import { roleBySlug } from '@/content/roles'
+import { openRoleBySlug } from '@/content/roles'
 import { ANSWER_MAX_LENGTH } from '@/lib/contact-schema'
 import { ScrollReveal } from '@/components/scroll-reveal'
 
@@ -12,7 +12,11 @@ type Status = 'idle' | 'sending' | 'sent'
 function ContactFormInner() {
   const params = useSearchParams()
   const roleSlug = params.get('role') ?? ''
-  const role = roleSlug ? roleBySlug(roleSlug) : undefined
+  // An old apply link for a role that has since closed falls back to the
+  // ordinary contact form. Checked once per link, so a role closing while
+  // someone is typing does not wipe their answers; the server refuses that
+  // submission with a clear message instead.
+  const role = useMemo(() => (roleSlug ? openRoleBySlug(roleSlug) : undefined), [roleSlug])
   const questions = role?.questions ?? []
   const applying = questions.length > 0
 

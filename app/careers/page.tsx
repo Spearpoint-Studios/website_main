@@ -5,6 +5,19 @@ import { openRoles } from '@/content/roles'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 
+// Roles can close on a date, so the list depends on when it is asked for.
+// Prerendered at build time it would keep showing an expired role until the
+// next deploy.
+export const dynamic = 'force-dynamic'
+
+function formatClosingDay(iso: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'UTC',
+    day: 'numeric',
+    month: 'long',
+  }).format(Date.parse(iso))
+}
+
 export const metadata: Metadata = {
   title: `Careers at ${site.name}`,
   description: `Open roles at ${site.name}.`,
@@ -68,7 +81,10 @@ export default function CareersPage() {
               {roles.map((role) => (
                 <article className="card role-card" key={role.slug}>
                   <h2 className="role-title">{role.title}</h2>
-                  <p className="role-location">{role.location}</p>
+                  <p className="role-location">
+                    {role.location}
+                    {role.closesAt && `, applications close ${formatClosingDay(role.closesAt)}`}
+                  </p>
                   <p className="role-summary">{role.summary}</p>
                   {role.description?.map((paragraph) => (
                     <p className="role-detail" key={paragraph}>
