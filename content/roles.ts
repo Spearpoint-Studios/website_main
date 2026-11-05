@@ -72,6 +72,25 @@ export const roles: Role[] = [
     open: true,
     closesAt: '2026-11-08T23:59:59+01:00',
   },
+  {
+    slug: '3d-artist',
+    title: '3D Artist',
+    location: 'Remote, part time',
+    summary: 'Model and texture the dinosaurs players spend their time as in Dinosaur Roleplay.',
+    description: [
+      'You will take dinosaurs from blockout to a finished, game-ready model: believable anatomy, clean topology that still looks right once it is rigged and animated, tidy UVs, and textures that hold up close without being too heavy to run on a phone.',
+      'This is a part-time role with flexible hours, and you can start whenever suits you. Show us creatures you have made. A good eye for skin, scales and wear matters more than which software you use.',
+    ],
+    questions: [
+      'How old are you, and what timezone are you in?',
+      'What are your Discord and Roblox usernames?',
+      'Where can we see your work? Link a portfolio, ArtStation, Sketchfab or similar.',
+      'Which tools do you model, sculpt and texture in?',
+      'Tell us about a creature you modelled and textured, from start to finish.',
+      'Have you made models for Roblox before? What limits did you work within?',
+    ],
+    open: true,
+  },
 ]
 
 export function isOpen(role: Role, now: number = Date.now()): boolean {
