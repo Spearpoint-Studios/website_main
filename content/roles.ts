@@ -67,7 +67,7 @@ export const roles: Role[] = [
       'Describe a bug you have seen in any game, written as a report to us.',
     ],
     open: true,
-    closesAt: '2026-11-08T23:59:59+01:00',
+    closesAt: '2026-11-15T23:59:59+01:00',
   },
   {
     slug: '3d-artist',
