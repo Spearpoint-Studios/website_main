@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { roles, openRoles, roleBySlug, openRoleBySlug, isOpen, type Role } from './roles'
-import { ANSWER_MAX_LENGTH } from '@/lib/contact-schema'
+import { ANSWER_MAX_LENGTH, DISCORD_MAX_LENGTH, ROBLOX_MAX_LENGTH } from '@/lib/contact-schema'
 
 const EMBED_TOTAL_LIMIT = 6000
 const FIELD_NAME_LIMIT = 256
-const WORST_CASE_HEADER = 120 + 'Name'.length + 80 + 'Email'.length + 160 + 'Role'.length + 64
+// Usernames are doubled because every character could need a markdown escape.
+const WORST_CASE_HEADER =
+  120 + 'Discord'.length + 2 * DISCORD_MAX_LENGTH + 'Roblox'.length + 2 * ROBLOX_MAX_LENGTH + 'Role'.length + 64
 
 describe('isOpen', () => {
   const role: Role = {

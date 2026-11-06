@@ -18,8 +18,8 @@ function post(body: unknown, headers: Record<string, string> = {}) {
 }
 
 const valid = {
-  name: 'Ada',
-  email: 'ada@example.com',
+  discord: 'ada',
+  roblox: 'Ada_Builds',
   subject: 'Hello',
   message: 'This is a long enough message.',
   renderedAt: 0,
@@ -40,9 +40,9 @@ describe('POST /api/contact', () => {
   })
 
   it('rejects an invalid submission with the reason', async () => {
-    const response = await POST(post({ ...valid, email: 'nope' }))
+    const response = await POST(post({ ...valid, discord: '' }))
     expect(response.status).toBe(400)
-    expect((await response.json()).error).toBe('Please enter a valid email address.')
+    expect((await response.json()).error).toBe('Please enter your Discord username.')
     expect(sendToDiscord).not.toHaveBeenCalled()
   })
 

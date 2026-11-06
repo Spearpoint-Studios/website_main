@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { site } from '@/content/site'
 import { openRoleBySlug } from '@/content/roles'
-import { ANSWER_MAX_LENGTH } from '@/lib/contact-schema'
+import { ANSWER_MAX_LENGTH, DISCORD_MAX_LENGTH, ROBLOX_MAX_LENGTH } from '@/lib/contact-schema'
 import { ScrollReveal } from '@/components/scroll-reveal'
 
 type Status = 'idle' | 'sending' | 'sent'
@@ -24,8 +24,8 @@ function ContactFormInner() {
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
 
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
+  const [discord, setDiscord] = useState('')
+  const [roblox, setRoblox] = useState('')
   const [subjectEdit, setSubjectEdit] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [answers, setAnswers] = useState<string[]>([])
@@ -46,7 +46,7 @@ function ContactFormInner() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          name, email, subject, website, renderedAt: renderedAt.current,
+          discord, roblox, subject, website, renderedAt: renderedAt.current,
           message: applying ? '' : message,
           ...(role ? { role: role.slug } : {}),
           ...(applying ? { answers: questions.map((_, i) => answers[i] ?? '') } : {}),
@@ -78,12 +78,12 @@ function ContactFormInner() {
     return applying ? (
       <div className="sent">
         <h3>Application sent</h3>
-        <p>Thanks for applying. We read every application and will reply by email.</p>
+        <p>Thanks for applying. We read every application and will reply on Discord.</p>
       </div>
     ) : (
       <div className="sent">
         <h3>Message sent</h3>
-        <p>Thanks for getting in touch. We read everything and will reply by email.</p>
+        <p>Thanks for getting in touch. We read everything and will reply on Discord.</p>
       </div>
     )
   }
@@ -92,14 +92,31 @@ function ContactFormInner() {
     <form onSubmit={onSubmit} noValidate>
       {error && <p className="form-error" role="alert">{error}</p>}
 
+      {/* One spare character on each cap leaves room for a leading @, which the server strips. */}
       <div className="pair">
         <div className="field">
-          <label htmlFor="c-name">Name</label>
-          <input id="c-name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+          <label htmlFor="c-discord">Discord username</label>
+          <input
+            id="c-discord"
+            value={discord}
+            onChange={(e) => setDiscord(e.target.value)}
+            maxLength={DISCORD_MAX_LENGTH + 1}
+            autoComplete="off"
+            autoCapitalize="none"
+            spellCheck={false}
+          />
         </div>
         <div className="field">
-          <label htmlFor="c-email">Email</label>
-          <input id="c-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+          <label htmlFor="c-roblox">Roblox username</label>
+          <input
+            id="c-roblox"
+            value={roblox}
+            onChange={(e) => setRoblox(e.target.value)}
+            maxLength={ROBLOX_MAX_LENGTH + 1}
+            autoComplete="off"
+            autoCapitalize="none"
+            spellCheck={false}
+          />
         </div>
       </div>
 

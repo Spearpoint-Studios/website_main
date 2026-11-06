@@ -5,10 +5,16 @@ const FIELD_NAME_LIMIT = 256
 const FIELD_VALUE_LIMIT = 1024
 const ACCENT = 0x1f7fa8
 
+// Usernames are full of underscores, which Discord would read as italics and
+// silently drop, so the name the team copies would not be the real one.
+export function escapeMarkdown(value: string): string {
+  return value.replace(/[\\_*~`|]/g, '\\$&')
+}
+
 export function buildEmbed(input: ContactInput): Record<string, unknown> {
   const fields: Array<{ name: string; value: string; inline?: boolean }> = [
-    { name: 'Name', value: input.name, inline: true },
-    { name: 'Email', value: input.email, inline: true },
+    { name: 'Discord', value: escapeMarkdown(input.discord), inline: true },
+    { name: 'Roblox', value: escapeMarkdown(input.roblox), inline: true },
   ]
 
   if (input.role) fields.push({ name: 'Role', value: input.role, inline: true })

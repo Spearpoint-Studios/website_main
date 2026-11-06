@@ -3,8 +3,8 @@ import { buildEmbed, sendToDiscord } from './discord'
 import type { ContactInput } from './contact-schema'
 
 const input: ContactInput = {
-  name: 'Ada',
-  email: 'ada@example.com',
+  discord: 'ada',
+  roblox: 'AdaBuilds',
   subject: 'Partnership',
   message: 'We should talk.',
   renderedAt: 0,
@@ -17,10 +17,17 @@ describe('buildEmbed', () => {
     expect(embed.description).toBe('We should talk.')
   })
 
-  it('includes name and email as fields', () => {
+  it('includes the Discord and Roblox usernames as fields', () => {
     const fields = buildEmbed(input).fields as Array<{ name: string; value: string }>
-    expect(fields.find((f) => f.name === 'Name')?.value).toBe('Ada')
-    expect(fields.find((f) => f.name === 'Email')?.value).toBe('ada@example.com')
+    expect(fields.find((f) => f.name === 'Discord')?.value).toBe('ada')
+    expect(fields.find((f) => f.name === 'Roblox')?.value).toBe('AdaBuilds')
+  })
+
+  it('escapes usernames so Discord shows them exactly as typed', () => {
+    const fields = buildEmbed({ ...input, discord: 'ada_.dev', roblox: 'Ada_Builds_99' })
+      .fields as Array<{ name: string; value: string }>
+    expect(fields.find((f) => f.name === 'Discord')?.value).toBe('ada\\_.dev')
+    expect(fields.find((f) => f.name === 'Roblox')?.value).toBe('Ada\\_Builds\\_99')
   })
 
   it('omits the role field when no role was sent', () => {

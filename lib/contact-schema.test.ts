@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { ANSWER_MAX_LENGTH, validateContact } from './contact-schema'
+import { ANSWER_MAX_LENGTH, DISCORD_MAX_LENGTH, validateContact } from './contact-schema'
 import type { Role } from '@/content/roles'
 
 const NOW = 1_000_000
 const base = {
-  name: 'Ada',
-  email: 'ada@example.com',
+  discord: 'ada',
+  roblox: 'Ada_Builds',
   subject: 'Hello',
   message: 'This is a long enough message.',
   renderedAt: NOW - 10_000,
@@ -21,19 +21,43 @@ describe('validateContact', () => {
     expect(validateContact('nope', NOW)).toEqual({ ok: false, error: 'Invalid request body.' })
   })
 
-  it('rejects a missing name', () => {
-    const result = validateContact({ ...base, name: '' }, NOW)
-    expect(result).toEqual({ ok: false, error: 'Please enter your name.' })
+  it('rejects a missing Discord username', () => {
+    const result = validateContact({ ...base, discord: '' }, NOW)
+    expect(result).toEqual({ ok: false, error: 'Please enter your Discord username.' })
   })
 
-  it('rejects a name over 80 characters', () => {
-    const result = validateContact({ ...base, name: 'a'.repeat(81) }, NOW)
-    expect(result).toEqual({ ok: false, error: 'Please enter your name.' })
+  it('rejects a one-character Discord username', () => {
+    const result = validateContact({ ...base, discord: 'a' }, NOW)
+    expect(result).toEqual({ ok: false, error: 'Please enter your Discord username.' })
   })
 
-  it('rejects an email with no dot after the at sign', () => {
-    const result = validateContact({ ...base, email: 'ada@example' }, NOW)
-    expect(result).toEqual({ ok: false, error: 'Please enter a valid email address.' })
+  it('accepts a legacy Discord tag at the length limit', () => {
+    const discord = 'a'.repeat(DISCORD_MAX_LENGTH - 5) + '#1234'
+    expect(validateContact({ ...base, discord }, NOW).ok).toBe(true)
+  })
+
+  it('rejects a Discord username over the length limit', () => {
+    const result = validateContact({ ...base, discord: 'a'.repeat(DISCORD_MAX_LENGTH + 1) }, NOW)
+    expect(result).toEqual({ ok: false, error: 'Please enter your Discord username.' })
+  })
+
+  it('rejects a missing Roblox username', () => {
+    const result = validateContact({ ...base, roblox: '   ' }, NOW)
+    expect(result).toEqual({ ok: false, error: 'Please enter your Roblox username.' })
+  })
+
+  it('rejects a Roblox username Roblox itself would not allow', () => {
+    const invalid = 'Please check your Roblox username. It is 3 to 20 letters, numbers or underscores.'
+    for (const roblox of ['ab', 'a'.repeat(21), 'Ada Builds', 'ada.builds']) {
+      expect(validateContact({ ...base, roblox }, NOW), roblox).toEqual({ ok: false, error: invalid })
+    }
+  })
+
+  it('drops a leading @ from both usernames', () => {
+    const result = validateContact({ ...base, discord: '@ada', roblox: '@Ada_Builds' }, NOW)
+    if (result.ok !== true) throw new Error('expected success')
+    expect(result.value.discord).toBe('ada')
+    expect(result.value.roblox).toBe('Ada_Builds')
   })
 
   it('rejects a message under 10 characters', () => {
@@ -72,9 +96,9 @@ describe('validateContact', () => {
   })
 
   it('trims surrounding whitespace on accepted values', () => {
-    const result = validateContact({ ...base, name: '  Ada  ' }, NOW)
+    const result = validateContact({ ...base, discord: '  ada  ' }, NOW)
     if (result.ok !== true) throw new Error('expected success')
-    expect(result.value.name).toBe('Ada')
+    expect(result.value.discord).toBe('ada')
   })
 
   it('passes the role slug through when present', () => {

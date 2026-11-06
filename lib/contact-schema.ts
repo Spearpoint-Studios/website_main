@@ -6,8 +6,8 @@ export type Answer = {
 }
 
 export type ContactInput = {
-  name: string
-  email: string
+  discord: string
+  roblox: string
   subject: string
   message: string
   role?: string
@@ -23,20 +23,24 @@ export type ValidationResult =
 
 const MIN_FILL_MS = 3000
 export const ANSWER_MAX_LENGTH = 800
+// Current Discord usernames run to 32 characters; a legacy name#1234 tag can
+// reach 37. Display names vary too much to pattern check, so only length is.
+export const DISCORD_MAX_LENGTH = 37
+// Roblox usernames are 3 to 20 letters, digits and underscores.
+export const ROBLOX_MAX_LENGTH = 20
+const ROBLOX_USERNAME = /^[A-Za-z0-9_]{3,20}$/
 
 function str(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
 }
 
-function inRange(value: string, min: number, max: number): boolean {
-  return value.length >= min && value.length <= max
+// People often type a handle the way it is shown in a mention.
+function username(value: unknown): string {
+  return str(value).replace(/^@/, '')
 }
 
-function looksLikeEmail(value: string): boolean {
-  const at = value.indexOf('@')
-  if (at < 1) return false
-  const domain = value.slice(at + 1)
-  return domain.includes('.') && !domain.startsWith('.') && !domain.endsWith('.')
+function inRange(value: string, min: number, max: number): boolean {
+  return value.length >= min && value.length <= max
 }
 
 export function validateContact(
@@ -62,12 +66,18 @@ export function validateContact(
   const elapsed = now - renderedAt
   if (elapsed >= 0 && elapsed < MIN_FILL_MS) return { ok: 'discard' }
 
-  const name = str(raw.name)
-  if (!inRange(name, 1, 80)) return { ok: false, error: 'Please enter your name.' }
+  const discord = username(raw.discord)
+  if (!inRange(discord, 2, DISCORD_MAX_LENGTH)) {
+    return { ok: false, error: 'Please enter your Discord username.' }
+  }
 
-  const email = str(raw.email)
-  if (!inRange(email, 3, 160) || !looksLikeEmail(email)) {
-    return { ok: false, error: 'Please enter a valid email address.' }
+  const roblox = username(raw.roblox)
+  if (roblox.length === 0) return { ok: false, error: 'Please enter your Roblox username.' }
+  if (!ROBLOX_USERNAME.test(roblox)) {
+    return {
+      ok: false,
+      error: 'Please check your Roblox username. It is 3 to 20 letters, numbers or underscores.',
+    }
   }
 
   const subject = str(raw.subject)
@@ -92,7 +102,7 @@ export function validateContact(
     }
     return {
       ok: true,
-      value: { name, email, subject, message, renderedAt, ...(role ? { role } : {}) },
+      value: { discord, roblox, subject, message, renderedAt, ...(role ? { role } : {}) },
     }
   }
 
@@ -116,5 +126,5 @@ export function validateContact(
     answers.push({ question: questions[i], answer })
   }
 
-  return { ok: true, value: { name, email, subject, message, role, answers, renderedAt } }
+  return { ok: true, value: { discord, roblox, subject, message, role, answers, renderedAt } }
 }

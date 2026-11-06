@@ -25,7 +25,6 @@ export const roles: Role[] = [
     ],
     questions: [
       'How old are you, and what timezone are you in?',
-      'What are your Discord and Roblox usernames?',
       'How many hours a week can you realistically give?',
       'Have you moderated a community before? Where, and for how long?',
       'Two players are arguing in chat and it is getting personal. What do you do?',
@@ -44,7 +43,6 @@ export const roles: Role[] = [
     ],
     questions: [
       'How old are you, and what timezone are you in?',
-      'What are your Discord and Roblox usernames?',
       'What communities have you run or helped grow? Links or numbers help.',
       'Write a short announcement for a new game update, two or three sentences.',
       'Players are angry about a change the team made. What do you post?',
@@ -63,7 +61,6 @@ export const roles: Role[] = [
     ],
     questions: [
       'How old are you, and what timezone are you in?',
-      'What are your Discord and Roblox usernames?',
       'How many hours a week can you realistically give?',
       'What can you test on? PC, Mac, phone, tablet, console?',
       'Have you tested games or reported bugs before? Tell us about it.',
@@ -83,7 +80,6 @@ export const roles: Role[] = [
     ],
     questions: [
       'How old are you, and what timezone are you in?',
-      'What are your Discord and Roblox usernames?',
       'Where can we see your work? Link a portfolio, ArtStation, Sketchfab or similar.',
       'Which tools do you model, sculpt and texture in?',
       'What past experience do you have? Studios, commissions and personal projects all count.',
